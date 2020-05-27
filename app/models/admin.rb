@@ -1,4 +1,7 @@
 class Admin < ApplicationRecord
+  validates_uniqueness_of :email, presence: true, case_sensitive: true
+  validates :password, presence: true
+
   include BCrypt
 
   self.primary_key = :email
