@@ -8,7 +8,7 @@ RSpec.describe Admin, type: :model do
     end
   end
 
-  describe '> user model validation' do
+  describe '> Admin model validation' do
     it '> not encoded password is not valid.' do
       admin = build(:admin)
       admin.password_decryption
