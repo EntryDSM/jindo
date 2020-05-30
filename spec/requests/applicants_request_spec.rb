@@ -91,17 +91,18 @@ RSpec.describe 'Applicants', type: :request do
 
   describe 'GET#index' do
     it '> return application detail information' do
-      request('get', '/applicants', { index: 1 }, true)
+      index = rand(1..10)
+      request('get', "/applicants/#{index}", false, true)
 
       valid_response = { applicants: [] }
 
-      12.times do
+      (index * 12).times do
         user = create(:user)
         create(:status, user_email: user.email)
       end
 
       User.order(created_at: :desc)
-          .offset((1 - 1) * 12).limit(12).each do |user|
+          .offset((index - 1) * 12).limit(12).each do |user|
         application_information = {
           examination_number: user.status.exam_code,
           name: user.name,
@@ -118,27 +119,72 @@ RSpec.describe 'Applicants', type: :request do
       expect(response.body).to equal(valid_response)
     end
 
-    it '> invalid params' do
-      request('get', '/applicants', false, true)
-
-      expect(response.status).to equal(400)
-    end
-
     it '> unauthorized token' do
-      request('get', '/applicants', { index: 1 }, false)
+      request('get', '/applicants/1')
 
       expect(response.status).to equal(401)
     end
 
     it '> invalid type of token' do
       request('get',
-              '/applicants',
-              true,
+              '/applicants/1',
+              false,
               @jwt_base.create_refresh_token(email: @user.email))
 
       expect(response.status).to equal(403)
     end
   end
 
+  describe 'PATCH#update' do
+    it '> successfully updated ' do
+      is_arrived = @user.status.is_printed_application_arrived
+      is_paid = @user.status.is_paid
+      is_final_submit = @user.status.is_final_submit
 
+      request('patch', '/applicants',
+              { email: @user.email,
+                is_arrived: !is_arrived }, true)
+      expect(!is_arrived).to equal(@user.status.is_printed_application_arrived)
+
+      request('patch', '/applicants',
+              { email: @user.email,
+                is_arrived: !is_paid }, true)
+      expect(!is_paid).to equal(@user.status.is_paid)
+
+      request('patch', '/applicants',
+              { email: @user.email,
+                is_arrived: !is_final_submit }, true)
+      expect(!is_final_submit).to equal(@user.status.is_final_submit)
+    end
+
+    it '> invalid params' do
+      request('patch', '/applicants', false, true)
+
+      expect(response.status).to equal(400)
+    end
+
+    it '> unauthorized token' do
+      request('patch', '/applicants', { email: @user.email }, false)
+
+      expect(response.status).to equal(401)
+    end
+
+    it '> invalid type of token' do
+      request('patch',
+              '/applicants',
+              true,
+              @jwt_base.create_refresh_token(email: @user.email))
+
+      expect(response.status).to equal(403)
+    end
+
+    it '> invalid email' do
+      request('patch',
+              '/applicants',
+              { email: 'hello_world@korea.korea' },
+              true)
+
+      expect(response.status).to equal(404)
+    end
+  end
 end
