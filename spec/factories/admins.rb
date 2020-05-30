@@ -1,3 +1,5 @@
+require_relative 'factory_bot_helpers'
+
 FactoryBot.define do
   factory :admin do
     email { FFaker::Internet.free_email }
