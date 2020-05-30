@@ -35,19 +35,19 @@ ActiveRecord::Schema.define(version: 0) do
     t.boolean :is_passed_interview
     t.boolean :is_final_submit
     t.datetime :submitted_at
-    t.string :exam_core
+    t.string :exam_code
   end
   change_column :status, :user_email, :string
 
   create_table :user, primary_key: :email, options: 'ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci', force: :cascade do |t|
     t.string :password, null: false
     t.integer :receipt_number, null: false
-    t.string :apply_type
-    t.string :additional_type
-    t.string :grade_type
+    t.integer :apply_type
+    t.integer :additional_type
+    t.integer :grade_type
     t.boolean :is_daejeon
     t.string :name
-    t.string :sex
+    t.integer :sex
     t.date :birth_date
     t.string :parent_name
     t.string :parent_tel
@@ -117,6 +117,4 @@ ActiveRecord::Schema.define(version: 0) do
     t.datetime :modified_at, null: false
   end
   change_column :ungraduated_application, :user_email, :string
-
-
 end
