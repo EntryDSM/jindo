@@ -88,4 +88,57 @@ RSpec.describe 'Applicants', type: :request do
       expect(response.status).to equal(404)
     end
   end
+
+  describe 'GET#index' do
+    it '> return application detail information' do
+      request('get', '/applicants', { index: 1 }, true)
+
+      valid_response = { applicants: [] }
+
+      12.times do
+        user = create(:user)
+        create(:status, user_email: user.email)
+      end
+
+      User.order(created_at: :desc)
+          .offset((1 - 1) * 12).limit(12).each do |user|
+        application_information = {
+          examination_number: user.status.exam_code,
+          name: user.name,
+          is_daejeon: user.is_daejeon,
+          apply_type: user.apply_type,
+          is_arrived: user.status.is_printed_application_arrived,
+          is_paid: user.status.is_paid,
+          is_final_submit: user.status.is_final_submit
+        }
+
+        valid_response[:applicants] << application_information
+      end
+
+      expect(response.body).to equal(valid_response)
+    end
+
+    it '> invalid params' do
+      request('get', '/applicants', false, true)
+
+      expect(response.status).to equal(400)
+    end
+
+    it '> unauthorized token' do
+      request('get', '/applicants', { index: 1 }, false)
+
+      expect(response.status).to equal(401)
+    end
+
+    it '> invalid type of token' do
+      request('get',
+              '/applicants',
+              true,
+              @jwt_base.create_refresh_token(email: @user.email))
+
+      expect(response.status).to equal(403)
+    end
+  end
+
+
 end
