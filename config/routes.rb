@@ -5,6 +5,6 @@ Rails.application.routes.draw do
   resources :statistics, only: :index
 
   get '/applicants', to: 'applicants#show'
-  resources :applicants, only: :index
+  get '/applicants/:index', to: 'applicants#index'
   patch '/applicants', to: 'applicants#update'
 end
