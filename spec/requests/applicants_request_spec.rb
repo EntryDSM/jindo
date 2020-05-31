@@ -172,7 +172,7 @@ RSpec.describe 'Applicants', type: :request do
     it '> invalid type of token' do
       request('patch',
               '/applicants',
-              true,
+              { email: @user.email },
               @jwt_base.create_refresh_token(email: @user.email))
 
       expect(response.status).to equal(403)
