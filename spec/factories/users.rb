@@ -7,7 +7,7 @@ FactoryBot.define do
     receipt_number { 1 }
     apply_type { rand(0..7) }
     additional_type { rand(0..2) }
-    grade_type { rand(1..2) }
+    grade_type { rand(0..2) }
     is_daejeon { rand_boolean }
     name { FFaker::NameKR.name }
     sex { rand(0..1) }
