@@ -148,12 +148,12 @@ RSpec.describe 'Applicants', type: :request do
 
       request('patch', '/applicants',
               { email: @user.email,
-                is_arrived: !is_paid }, true)
+                is_paid: !is_paid }, true)
       expect(!is_paid).to equal(@user.status.is_paid)
 
       request('patch', '/applicants',
               { email: @user.email,
-                is_arrived: !is_final_submit }, true)
+                is_final_submit: !is_final_submit }, true)
       expect(!is_final_submit).to equal(@user.status.is_final_submit)
     end
 
