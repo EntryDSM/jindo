@@ -9,7 +9,7 @@ RSpec.describe 'Applicants', type: :request do
 
   describe 'GET#show' do
     it '> return application information' do
-      request('get', '/applicants', { email: @user.email }, true)
+      request('get', '/applicant', { email: @user.email }, true)
 
       valid_response = { applicant_information: {
         status: {
@@ -59,20 +59,20 @@ RSpec.describe 'Applicants', type: :request do
     end
 
     it '> invalid params' do
-      request('get', '/applicants', false, true)
+      request('get', '/applicant', false, true)
 
       expect(response.status).to equal(400)
     end
 
     it '> unauthorized token' do
-      request('get', '/applicants', { email: @user.email }, false)
+      request('get', '/applicant', { email: @user.email }, false)
 
       expect(response.status).to equal(401)
     end
 
     it '> invalid type of token' do
       request('get',
-              '/applicants',
+              '/applicant',
               true,
               @jwt_base.create_refresh_token(email: @user.email))
 
@@ -81,7 +81,7 @@ RSpec.describe 'Applicants', type: :request do
 
     it '> invalid email' do
       request('get',
-              '/applicants',
+              '/applicant',
               { email: 'hello_world@korea.korea' },
               true)
 
@@ -91,19 +91,19 @@ RSpec.describe 'Applicants', type: :request do
 
   describe 'GET#index' do
     it '> return application detail information' do
-      index = rand(1..10)
-      request('get', "/applicants/#{index}", false, true)
+      @index = rand(1..10)
+      request('get', '/applicants', { index: @index }, true)
 
       valid_response = { applicants: [] }
 
-      (index * 12).times do
+      (@index * 12).times do
         user = create(:user)
         create(:status, user_email: user.email)
       end
 
       User.order(created_at: :desc)
-          .offset((index - 1) * 12).limit(12).each do |user|
-        application_information = {
+          .offset((@index - 1) * 12).limit(12).each do |user|
+        valid_response[:applicants] << {
           examination_number: user.status.exam_code,
           name: user.name,
           is_daejeon: user.is_daejeon,
@@ -112,23 +112,21 @@ RSpec.describe 'Applicants', type: :request do
           is_paid: user.status.is_paid,
           is_final_submit: user.status.is_final_submit
         }
-
-        valid_response[:applicants] << application_information
       end
 
       expect(response.body).to equal(valid_response)
     end
 
     it '> unauthorized token' do
-      request('get', '/applicants/1')
+      request('get', '/applicants', { index: @index })
 
       expect(response.status).to equal(401)
     end
 
     it '> invalid type of token' do
       request('get',
-              '/applicants/1',
-              false,
+              '/applicants',
+              { index: @index },
               @jwt_base.create_refresh_token(email: @user.email))
 
       expect(response.status).to equal(403)
@@ -141,37 +139,37 @@ RSpec.describe 'Applicants', type: :request do
       is_paid = @user.status.is_paid
       is_final_submit = @user.status.is_final_submit
 
-      request('patch', '/applicants',
+      request('patch', '/applicant',
               { email: @user.email,
                 is_arrived: !is_arrived }, true)
       expect(!is_arrived).to equal(@user.status.is_printed_application_arrived)
 
-      request('patch', '/applicants',
+      request('patch', '/applicant',
               { email: @user.email,
                 is_paid: !is_paid }, true)
       expect(!is_paid).to equal(@user.status.is_paid)
 
-      request('patch', '/applicants',
+      request('patch', '/applicant',
               { email: @user.email,
                 is_final_submit: !is_final_submit }, true)
       expect(!is_final_submit).to equal(@user.status.is_final_submit)
     end
 
     it '> invalid params' do
-      request('patch', '/applicants', false, true)
+      request('patch', '/applicant', false, true)
 
       expect(response.status).to equal(400)
     end
 
     it '> unauthorized token' do
-      request('patch', '/applicants', { email: @user.email }, false)
+      request('patch', '/applicant', { email: @user.email }, false)
 
       expect(response.status).to equal(401)
     end
 
     it '> invalid type of token' do
       request('patch',
-              '/applicants',
+              '/applicant',
               { email: @user.email },
               @jwt_base.create_refresh_token(email: @user.email))
 
@@ -180,7 +178,7 @@ RSpec.describe 'Applicants', type: :request do
 
     it '> invalid email' do
       request('patch',
-              '/applicants',
+              '/applicant',
               { email: 'hello_world@korea.korea' },
               true)
 

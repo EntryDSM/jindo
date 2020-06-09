@@ -4,7 +4,7 @@ Rails.application.routes.draw do
 
   resources :statistics, only: :index
 
-  get '/applicants', to: 'applicants#show'
-  get '/applicants/:index', to: 'applicants#index'
-  patch '/applicants', to: 'applicants#update'
+  get '/applicant', to: 'applicants#show'
+  get '/applicants', to: 'applicants#index'
+  patch '/applicant', to: 'applicants#update'
 end
