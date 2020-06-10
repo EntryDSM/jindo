@@ -1,9 +1,9 @@
+require 'jwt_base'
+
 def request(method, url, params = false, headers = false)
   parameters = {}
 
-  if params
-    parameters[:params] = params
-  end
+  parameters[:params] = params if params
 
   if headers == true
     parameters[:headers] = { Authorization: "Bearer #{@token}" }
@@ -16,7 +16,8 @@ end
 
 def set_database
   @jwt_base = JWTBase.new(ENV['SECRET_KEY_BASE'], 1.days, 2.weeks)
-  @token = @jwt_base.create_access_token(email: create(:admin).email)
+  @admin = create(:admin)
+  @token = @jwt_base.create_access_token(email: @admin.email)
   @user = create(:user)
   @grade_type = @user.grade_type.downcase + '_application'
   create(:status, user_email: @user.email)
