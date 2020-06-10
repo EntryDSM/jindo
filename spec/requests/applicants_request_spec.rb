@@ -1,5 +1,4 @@
 require 'rails_helper'
-require 'jwt_base'
 require_relative 'request_helpers'
 
 RSpec.describe 'Applicants', type: :request do
@@ -74,7 +73,7 @@ RSpec.describe 'Applicants', type: :request do
       request('get',
               '/applicant',
               true,
-              @jwt_base.create_refresh_token(email: @user.email))
+              @jwt_base.create_refresh_token(email: @admin.email))
 
       expect(response.status).to equal(403)
     end
@@ -127,7 +126,7 @@ RSpec.describe 'Applicants', type: :request do
       request('get',
               '/applicants',
               { index: @index },
-              @jwt_base.create_refresh_token(email: @user.email))
+              @jwt_base.create_refresh_token(email: @admin.email))
 
       expect(response.status).to equal(403)
     end
@@ -171,7 +170,7 @@ RSpec.describe 'Applicants', type: :request do
       request('patch',
               '/applicant',
               { email: @user.email },
-              @jwt_base.create_refresh_token(email: @user.email))
+              @jwt_base.create_refresh_token(email: @admin.email))
 
       expect(response.status).to equal(403)
     end
