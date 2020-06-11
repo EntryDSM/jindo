@@ -54,7 +54,7 @@ RSpec.describe 'Applicants', type: :request do
         valid_response[:applicant_information][:evaluation] = evaluation
       end
 
-      expect(response.body).to equal(valid_response)
+      expect(JSON.parse(response.body)).to equal(valid_response)
     end
 
     it '> invalid params' do
@@ -113,7 +113,7 @@ RSpec.describe 'Applicants', type: :request do
         }
       end
 
-      expect(response.body).to equal(valid_response)
+      expect(JSON.parse(response.body)).to equal(valid_response)
     end
 
     it '> unauthorized token' do
