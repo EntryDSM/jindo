@@ -10,13 +10,13 @@ RSpec.describe 'Statistics', type: :request do
     it '> return statistics information when area is nationwide' do
       request('get', '/statistics', { area: 'nationwide' }, true)
 
-      expect(response.body).to equal(Admin.statistics(false))
+      expect(response.body).to equal(User.statistics(false))
     end
 
     it '> return statistics information when area is daejeon' do
       request('get', '/statistics', { area: 'daejeon' }, true)
 
-      expect(response.body).to equal(Admin.statistics(true))
+      expect(response.body).to equal(User.statistics(true))
     end
 
     it '> return statistics information when area is all' do
@@ -25,8 +25,8 @@ RSpec.describe 'Statistics', type: :request do
       total_applicant_count = User.count
 
       all_valid_response = {
-        nationwide: Admin.statistics(false),
-        daejeon: Admin.statistics(true),
+        nationwide: User.statistics(false),
+        daejeon: User.statistics(true),
         total_applicant_count: total_applicant_count,
         total_competition_rate: (total_applicant_count.to_r / 80).round(2).to_f
       }
