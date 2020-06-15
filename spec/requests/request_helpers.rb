@@ -27,6 +27,6 @@ def set_database
                { school_code: create(:school).school_code, user_email: @user.email }
              end
 
-  create(@grade_type.to_s, argument)
+  create(@grade_type.to_sym, argument)
   create(:calculated_score, user_email: @user.email)
 end
