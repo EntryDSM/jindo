@@ -10,13 +10,13 @@ RSpec.describe 'Statistics', type: :request do
     it '> return statistics information when area is nationwide' do
       request('get', '/statistics', { area: 'nationwide' }, true)
 
-      expect(JSON.parse(response.body)).to equal(User.statistics(false))
+      expect(User.statistics(false)).to equal(JSON.parse(response.body))
     end
 
     it '> return statistics information when area is daejeon' do
       request('get', '/statistics', { area: 'daejeon' }, true)
 
-      expect(JSON.parse(response.body)).to equal(User.statistics(true))
+      expect(User.statistics(true)).to equal(JSON.parse(response.body))
     end
 
     it '> return statistics information when area is all' do
@@ -31,7 +31,7 @@ RSpec.describe 'Statistics', type: :request do
         total_competition_rate: (total_applicant_count.to_r / 80).round(2).to_f
       }
 
-      expect(JSON.parse(response.body)).to equal(all_valid_response)
+      expect(all_valid_response).to equal(JSON.parse(response.body))
     end
 
     it '> invalid params' do
