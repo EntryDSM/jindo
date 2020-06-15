@@ -1,4 +1,6 @@
 class ApplicantsController < ApplicationController
+  before_action :jwt_required
+
   def show
 
   end
