@@ -1,11 +1,12 @@
 require 'rails_helper'
+require_relative 'request_helpers'
 
 RSpec.describe 'Authentications', type: :request do
-  describe 'POST#login' do
-    before(:all) do
-      set_database
-    end
+  before(:all) do
+    set_database
+  end
 
+  describe 'POST#login' do
     it '> return access, refresh tokens' do
       request('post', '/auth', { email: @admin.email,
                                  password: @admin.password }, false)
