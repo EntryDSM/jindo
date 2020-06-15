@@ -99,4 +99,71 @@ class User < ApplicationRecord
 
     response
   end
+
+  def applicant_information
+    response = { applicant_information: {
+      status: {
+        is_paid: status.is_paid,
+        is_arrived: status.is_printed_application_arrived,
+        is_final_submit: status.is_final_submit
+      },
+
+      privacy: {
+        user_photo: user_photo,
+        name: name,
+        birth_date: birth_date,
+        grade_type: grade_type,
+        apply_type: apply_type,
+        applicant_tel: applicant_tel,
+        parent_tel: parent_tel,
+        home_tel: home_tel,
+        email: email
+      },
+
+      evaluation: {
+        conversion_score: calculated_score.conversion_score,
+        self_introduction: self_introduction,
+        study_plan: study_plan
+      }
+    } }
+
+    return response if grade_type == 'GED'
+
+    applicant_type = send(grade_type.downcase + '_application')
+    privacy = response[:applicant_information][:privacy]
+    evaluation = response[:applicant_information][:evaluation]
+
+    privacy[:school_name] = applicant_type.school.school_full_name
+    privacy[:school_address] = applicant_type.school.school_address
+    privacy[:school_tel] = applicant_type.school_tel
+    evaluation[:volunteer_time] = applicant_type.volunteer_time
+    evaluation[:full_absent_count] = applicant_type.full_cut_count
+    evaluation[:early_leave_count] = applicant_type.early_leave_count
+    evaluation[:late_count] = applicant_type.late_count
+    evaluation[:period_absent_count] = applicant_type.period_cut_count
+
+    response[:applicant_information][:privacy] = privacy
+    response[:applicant_information][:evaluation] = evaluation
+
+    response
+  end
+
+  def self.applicants_information(index)
+    response = { applicants_information: [] }
+
+    User.order(created_at: :desc)
+        .offset((index - 1) * 12).limit(12).each do |user|
+      response[:applicants_information] << {
+        examination_number: user.status.exam_code,
+        name: user.name,
+        is_daejeon: user.is_daejeon,
+        apply_type: user.apply_type,
+        is_arrived: user.status.is_printed_application_arrived,
+        is_paid: user.status.is_paid,
+        is_final_submit: user.status.is_final_submit
+      }
+    end
+
+    response
+  end
 end

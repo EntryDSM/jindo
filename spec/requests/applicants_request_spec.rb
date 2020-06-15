@@ -10,51 +10,7 @@ RSpec.describe 'Applicants', type: :request do
     it '> return application information' do
       request('get', '/applicant', { email: @user.email }, true)
 
-      valid_response = { applicant_information: {
-        status: {
-          is_paid: @user.status.is_paid,
-          is_arrived: @user.status.is_printed_application_arrived,
-          is_final_submit: @user.status.is_final_submit
-        },
-
-        privacy: {
-          user_photo: @user.user_photo,
-          name: @user.name,
-          birth_date: @user.birth_date,
-          grade_type: @user.grade_type,
-          apply_type: @user.apply_type,
-          applicant_tel: @user.applicant_tel,
-          parent_tel: @user.parent_tel,
-          home_tel: @user.home_tel,
-          email: @user.email
-        },
-
-        evaluation: {
-          conversion_score: @user.calculated_score.conversion_score,
-          self_introduction: @user.self_introduction,
-          study_plan: @user.study_plan
-        }
-      } }
-
-      unless @user.grade_type == 'GED'
-        @user = @user.send(@grade_type)
-        privacy = valid_response[:applicant_information][:privacy]
-        evaluation = valid_response[:applicant_information][:evaluation]
-
-        privacy[:school_name] = @user.school.school_full_name
-        privacy[:school_address] = @user.school.school_address
-        privacy[:school_tel] = @user.school_tel
-        evaluation[:volunteer_time] = @user.volunteer_time
-        evaluation[:full_absent_count] = @user.full_cut_count
-        evaluation[:early_leave_count] = @user.early_leave_count
-        evaluation[:late_count] = @user.late_count
-        evaluation[:period_absent_count] = @user.period_cut_count
-
-        valid_response[:applicant_information][:privacy] = privacy
-        valid_response[:applicant_information][:evaluation] = evaluation
-      end
-
-      expect(JSON.parse(response.body)).to equal(valid_response)
+      expect(@user.applicant_information).to equal(JSON.parse(response.body))
     end
 
     it '> invalid params' do
@@ -93,27 +49,12 @@ RSpec.describe 'Applicants', type: :request do
       @index = rand(1..10)
       request('get', '/applicants', { index: @index }, true)
 
-      valid_response = { applicants: [] }
-
       (@index * 12).times do
         user = create(:user)
         create(:status, user_email: user.email)
       end
 
-      User.order(created_at: :desc)
-          .offset((@index - 1) * 12).limit(12).each do |user|
-        valid_response[:applicants] << {
-          examination_number: user.status.exam_code,
-          name: user.name,
-          is_daejeon: user.is_daejeon,
-          apply_type: user.apply_type,
-          is_arrived: user.status.is_printed_application_arrived,
-          is_paid: user.status.is_paid,
-          is_final_submit: user.status.is_final_submit
-        }
-      end
-
-      expect(JSON.parse(response.body)).to equal(valid_response)
+      expect(User.applicants_information(@index)).to equal(JSON.parse(response.body))
     end
 
     it '> unauthorized token' do
