@@ -14,6 +14,8 @@ class User < ApplicationRecord
   has_one :status, foreign_key: :user_email
   has_one :calculated_score, foreign_key: :user_email
 
+  FILTERS = %i[email exam_code school_name applicant_tel name].freeze
+
   def self.score_distribution(key, value, is_daejeon)
     (70..150).step(10).each do |i|
       conversion_score_query = if i > 70
@@ -111,7 +113,7 @@ class User < ApplicationRecord
       privacy: {
         user_photo: user_photo,
         name: name,
-        birth_date: birth_date,
+        birth_date: birth_date.strftime('%Y-%m-%d'),
         grade_type: grade_type,
         apply_type: apply_type,
         applicant_tel: applicant_tel,
@@ -148,22 +150,50 @@ class User < ApplicationRecord
     response
   end
 
-  def self.applicants_information(index)
-    response = { applicants_information: [] }
+  def applicants_information
+    {
+      examination_number: status.exam_code,
+      name: name,
+      is_daejeon: is_daejeon,
+      apply_type: apply_type,
+      is_arrived: status.is_printed_application_arrived,
+      is_paid: status.is_paid,
+      is_final_submit: status.is_final_submit
+    }
+  end
 
-    User.order(created_at: :desc)
-        .offset((index - 1) * 12).limit(12).each do |user|
-      response[:applicants_information] << {
-        examination_number: user.status.exam_code,
-        name: user.name,
-        is_daejeon: user.is_daejeon,
-        apply_type: user.apply_type,
-        is_arrived: user.status.is_printed_application_arrived,
-        is_paid: user.status.is_paid,
-        is_final_submit: user.status.is_final_submit
-      }
+  def self.applicants_information(index, presence_filter = nil, filter_value = nil)
+    return nil if index < 1
+
+    case presence_filter
+    when 0
+      User.where('email LIKE ?', "%#{filter_value}%")
+          .map(&:applicants_information)
+    when 1
+      Status.find_by_exam_code(filter_value).user
+            .applicants_information
+    when 2
+      graduated_email = School.find_by_school_full_name(filter_value)
+                              .graduated_application_ids
+      ungraduated_email = School.find_by_school_full_name(filter_value)
+                                .ungraduated_application_ids
+
+      graduated_user = GraduatedApplication.where('user_email IN (?)', graduated_email)
+      ungraduated_user = UngraduatedApplication.where('user_email IN (?)', ungraduated_email)
+
+      graduated_user.map { |app| app.user.applicants_information } +
+        ungraduated_user.map { |app| app.user.applicants_information }
+    when 3
+      User.find_by_applicant_tel(filter_value)
+          .applicants_information
+    when 4
+      User.where('name LIKE ?', "%#{filter_value}%")
+          .map(&:applicants_information)
+    else
+      User.order(created_at: :desc)
+          .offset((index - 1) * 12)
+          .limit(12)
+          .map(&:applicants_information)
     end
-
-    response
   end
 end
