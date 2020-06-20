@@ -10,13 +10,7 @@ RSpec.describe 'Applicants', type: :request do
     it '> return application information' do
       request('get', '/applicant', { email: @user.email }, true)
 
-      expect(@user.applicant_information).to equal(JSON.parse(response.body))
-    end
-
-    it '> invalid params' do
-      request('get', '/applicant', false, true)
-
-      expect(response.status).to equal(400)
+      expect(@user.applicant_information).to eql(JSON.parse(response.body, symbolize_names: true))
     end
 
     it '> unauthorized token' do
@@ -46,15 +40,11 @@ RSpec.describe 'Applicants', type: :request do
 
   describe 'GET#index' do
     it '> return application detail information' do
-      @index = rand(1..10)
+      @index = 1
       request('get', '/applicants', { index: @index }, true)
 
-      (@index * 12).times do
-        user = create(:user)
-        create(:status, user_email: user.email)
-      end
-
-      expect(User.applicants_information(@index)).to equal(JSON.parse(response.body))
+      expect(applicants_information: User.applicants_information(@index))
+        .to(eql(JSON.parse(response.body, symbolize_names: true)))
     end
 
     it '> unauthorized token' do
@@ -74,31 +64,40 @@ RSpec.describe 'Applicants', type: :request do
   end
 
   describe 'PATCH#update' do
-    it '> successfully updated ' do
+    it '> is_arrived successfully updated ' do
       is_arrived = @user.status.is_printed_application_arrived
-      is_paid = @user.status.is_paid
-      is_final_submit = @user.status.is_final_submit
 
       request('patch', '/applicant',
               { email: @user.email,
                 is_arrived: !is_arrived }, true)
-      expect(!is_arrived).to equal(@user.status.is_printed_application_arrived)
+
+      expect(!is_arrived).to equal(User.find_by_email(@user.email)
+                                       .status
+                                       .is_printed_application_arrived)
+    end
+
+    it '> is_paid successfully updated' do
+      is_paid = @user.status.is_paid
 
       request('patch', '/applicant',
               { email: @user.email,
                 is_paid: !is_paid }, true)
-      expect(!is_paid).to equal(@user.status.is_paid)
+
+      expect(!is_paid).to equal(User.find_by_email(@user.email)
+                                    .status
+                                    .is_paid)
+    end
+
+    it '> is_final_submit successfully updated' do
+      is_final_submit = @user.status.is_final_submit
 
       request('patch', '/applicant',
               { email: @user.email,
                 is_final_submit: !is_final_submit }, true)
-      expect(!is_final_submit).to equal(@user.status.is_final_submit)
-    end
 
-    it '> invalid params' do
-      request('patch', '/applicant', false, true)
-
-      expect(response.status).to equal(400)
+      expect(!is_final_submit).to equal(User.find_by_email(@user.email)
+                                            .status
+                                            .is_final_submit)
     end
 
     it '> unauthorized token' do
