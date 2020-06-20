@@ -10,13 +10,15 @@ RSpec.describe 'Statistics', type: :request do
     it '> return statistics information when area is nationwide' do
       request('get', '/statistics', { area: 'nationwide' }, true)
 
-      expect(User.statistics(false)).to equal(JSON.parse(response.body))
+      expect(User.statistics(false))
+        .to(eql(JSON.parse(response.body, symbolize_names: true)))
     end
 
     it '> return statistics information when area is daejeon' do
       request('get', '/statistics', { area: 'daejeon' }, true)
 
-      expect(User.statistics(true)).to equal(JSON.parse(response.body))
+      expect(User.statistics(true))
+        .to(eql(JSON.parse(response.body, symbolize_names: true)))
     end
 
     it '> return statistics information when area is all' do
@@ -31,13 +33,8 @@ RSpec.describe 'Statistics', type: :request do
         total_competition_rate: (total_applicant_count.to_r / 80).round(2).to_f
       }
 
-      expect(all_valid_response).to equal(JSON.parse(response.body))
-    end
-
-    it '> invalid params' do
-      request('get', '/statistics', false, true)
-
-      expect(response.status).to equal(400)
+      expect(all_valid_response)
+        .to(eql(JSON.parse(response.body, symbolize_names: true)))
     end
 
     it '> unauthorized token' do
@@ -53,15 +50,6 @@ RSpec.describe 'Statistics', type: :request do
               @jwt_base.create_refresh_token(email: @admin.email))
 
       expect(response.status).to equal(403)
-    end
-
-    it '> invalid email' do
-      request('get',
-              '/statistics',
-              { email: 'hello_world@korea.korea' },
-              true)
-
-      expect(response.status).to equal(404)
     end
   end
 end
