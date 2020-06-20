@@ -3,26 +3,20 @@ require_relative 'request_helpers'
 
 RSpec.describe 'Authentications', type: :request do
   before(:all) do
-    set_database
+    @admin = create(:admin, password: BCrypt::Password.create('q1w2e3r4'))
   end
 
   describe 'POST#login' do
     it '> return access, refresh tokens' do
       request('post', '/auth', { email: @admin.email,
-                                 password: @admin.password }, false)
+                                 password: 'q1w2e3r4' }, false)
 
       resp = JSON.parse(response.body)
 
-      @jwt_base.refresh_token_required(resp['refresh_token'])
-      payload = @jwt_base.jwt_required(resp['access_token'])
+      JWT_BASE.refresh_token_required(resp['refresh_token'])
+      payload = JWT_BASE.jwt_required(resp['access_token'])
 
-      expect(payload).to equal('email': @admin.email)
-    end
-
-    it '> invalid params' do
-      request('post', '/auth', false, false)
-
-      expect(response.status).to equal(400)
+      expect(payload['email']).to eql(@admin.email)
     end
 
     it '> invalid email/password' do
@@ -35,23 +29,25 @@ RSpec.describe 'Authentications', type: :request do
 
   describe 'PUT#refresh' do
     it '> return access token' do
-      request('put', '/auth', false,
-              @jwt_base.create_refresh_token(email: @admin.email))
+      request('put',
+              '/auth',
+              { dummy: '' },
+              JWT_BASE.create_refresh_token(email: @admin.email))
 
       resp = JSON.parse(response.body)
-      payload = @jwt_base.jwt_required(resp['access_token'])
+      payload = JWT_BASE.jwt_required(resp['access_token'])
 
-      expect(payload).to equal('email': @admin.email)
+      expect(payload['email']).to eql(@admin.email)
     end
 
     it '> unauthorized token' do
-      request('post', '/auth', false, false)
+      request('put', '/auth', { dummy: '' }, false)
 
-      expect(response.status).to equal(401)
+      expect(response.status).to eql(401)
     end
 
     it '> invalid type of token' do
-      request('post', '/auth', false, true)
+      request('put', '/auth', false, true)
 
       expect(response.status).to equal(403)
     end
