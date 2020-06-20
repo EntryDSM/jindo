@@ -1,5 +1,7 @@
 require 'jwt_base'
 
+JWT_BASE = JWTBase.new(ENV['SECRET_KEY_BASE'], 1.days, 2.weeks).freeze
+
 def request(method, url, params = false, headers = false)
   parameters = {}
 
@@ -15,9 +17,8 @@ def request(method, url, params = false, headers = false)
 end
 
 def set_database
-  @jwt_base = JWTBase.new(ENV['SECRET_KEY_BASE'], 1.days, 2.weeks)
   @admin = create(:admin)
-  @token = @jwt_base.create_access_token(email: @admin.email)
+  @token = JWT_BASE.create_access_token(email: @admin.email)
   @user = create(:user)
   @grade_type = @user.grade_type.downcase + '_application'
   create(:status, user_email: @user.email)
