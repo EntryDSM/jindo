@@ -31,4 +31,10 @@ class ApplicationController < ActionController::API
 
     @payload
   end
+
+  def current_user
+    params.require(:email)
+
+    User.find_by_email(params[:email])
+  end
 end
