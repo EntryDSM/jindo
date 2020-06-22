@@ -11,13 +11,13 @@ class ApplicantsController < ApplicationController
   def index
     params.require(:index)
 
-    filters = User::FILTERS
-    presence_index = params.values_at(*filters).index { |value| !value.nil? }
-    apps_inform = User.applicants_information(params[:index].to_i,
-                                              presence_index,
-                                              params[filters[presence_index.to_i]])
+    presence_index = params.values_at(*User::FILTERS).index { |value| !value.nil? }
+    valid_filter = params[User::FILTERS[presence_index]] if presence_index
+    apps_info = User.applicants_information(params[:index].to_i,
+                                            presence_index,
+                                            valid_filter)
 
-    render json: { applicants_information: apps_inform },
+    render json: { applicants_information: apps_info },
            status: :ok
   end
 
