@@ -15,6 +15,7 @@ class User < ApplicationRecord
   has_one :calculated_score, foreign_key: :user_email
 
   FILTERS = %i[email exam_code school_name applicant_tel name].freeze
+  USER_PER_PAGE = 12
 
   def self.score_distribution(key, value, is_daejeon)
     (70..150).step(10).each do |i|
@@ -151,6 +152,8 @@ class User < ApplicationRecord
   end
 
   def applicants_information
+    return nil if nil?
+
     {
       examination_number: status.exam_code,
       name: name,
@@ -168,10 +171,16 @@ class User < ApplicationRecord
     case presence_filter
     when 0
       User.where('email LIKE ?', "%#{filter_value}%")
+          .order(created_at: :desc)
+          .offset((index - 1) * USER_PER_PAGE)
+          .limit(USER_PER_PAGE)
           .map(&:applicants_information)
+          .compact
     when 1
-      Status.find_by_exam_code(filter_value).user
-            .applicants_information
+      status = Status.find_by_exam_code(filter_value)
+      return [] if status.nil?
+
+      [status.user.applicants_information]
     when 2
       graduated_email = School.find_by_school_full_name(filter_value)
                               .graduated_application_ids
@@ -181,19 +190,28 @@ class User < ApplicationRecord
       graduated_user = GraduatedApplication.where('user_email IN (?)', graduated_email)
       ungraduated_user = UngraduatedApplication.where('user_email IN (?)', ungraduated_email)
 
-      graduated_user.map { |app| app.user.applicants_information } +
-        ungraduated_user.map { |app| app.user.applicants_information }
+      users = graduated_user.map { |app| app.user.applicants_information }.compact +
+              ungraduated_user.map { |app| app.user.applicants_information }.compact
+
+      users[(index - 1) * USER_PER_PAGE, index * USER_PER_PAGE - 1]
     when 3
-      User.find_by_applicant_tel(filter_value)
-          .applicants_information
+      user = User.find_by_applicant_tel(filter_value)
+      return [] if user.nil?
+
+      [user.applicants_information]
     when 4
       User.where('name LIKE ?', "%#{filter_value}%")
+          .order(created_at: :desc)
+          .offset((index - 1) * USER_PER_PAGE)
+          .limit(USER_PER_PAGE)
           .map(&:applicants_information)
+          .compact
     else
       User.order(created_at: :desc)
-          .offset((index - 1) * 12)
-          .limit(12)
+          .offset((index - 1) * USER_PER_PAGE)
+          .limit(USER_PER_PAGE)
           .map(&:applicants_information)
+          .compact
     end
   end
 end
