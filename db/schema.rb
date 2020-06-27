@@ -41,7 +41,7 @@ ActiveRecord::Schema.define(version: 0) do
 
   create_table :user, primary_key: :email, options: 'ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci', force: :cascade do |t|
     t.string :password, null: false
-    t.integer :receipt_number, null: false
+    t.integer :receipt_code, null: false
     t.integer :apply_type
     t.integer :additional_type
     t.integer :grade_type
@@ -53,6 +53,7 @@ ActiveRecord::Schema.define(version: 0) do
     t.string :parent_tel
     t.string :applicant_tel
     t.text :address
+    t.text :detail_address
     t.string :post_code
     t.string :user_photo
     t.string :home_tel
