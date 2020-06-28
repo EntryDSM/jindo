@@ -14,6 +14,11 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      SECRET_KEY_BASE: ${{ secrets.SECRET_KEY_BASE }}
+      JINDO_TEST_DATABASE_USERNAME: ${{ secrets.JINDO_TEST_DATABASE_USERNAME }}
+      JINDO_TEST_DATABASE_PASSWORD: ${{ secrets.JINDO_TEST_DATABASE_PASSWORD }}
+      JINDO_TEST_DATABASE_HOST: ${{ secrets.JINDO_TEST_DATABASE_HOST }}
 
     steps:
       - uses: actions/checkout@v2
