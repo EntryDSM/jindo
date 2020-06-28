@@ -2,25 +2,26 @@ require_relative 'factory_bot_helpers'
 
 FactoryBot.define do
   factory :user do
-    email { FFaker::Internet.free_email }
-    password { FFaker::Internet.password }
-    receipt_number { 1 }
-    apply_type { rand(0..7) }
-    additional_type { rand(0..2) }
-    grade_type { rand(0..2) }
-    is_daejeon { rand_boolean }
-    name { FFaker::NameKR.name }
-    sex { rand(0..1) }
-    birth_date { FFaker::Time.between('2005-01-01 00:00', '2005-12-31 23:59') }
-    parent_name { FFaker::NameKR.name }
-    parent_tel { cellphone }
-    applicant_tel { cellphone }
-    address { FFaker::AddressKR.road_addess }
-    post_code { FFaker::AddressKR.postal_code }
+    email { 'wjd030811@dsm.hs.kr' }
+    password { 'q1w2e3r4' }
+    receipt_code { 1 }
+    apply_type { 0 }
+    additional_type { 0 }
+    grade_type { 1 }
+    is_daejeon { 0 }
+    name { '정우영' }
+    sex { 0 }
+    birth_date { '2005-01-01 00:00' }
+    parent_name { '엄마' }
+    parent_tel { '010-0000-0000' }
+    applicant_tel { '010-0000-0000' }
+    address { '"주소"' }
+    detail_address { '"상세주소"' }
+    post_code { '12345' }
     user_photo { '/home/ubuntu/image.jpg' }
-    home_tel { telephone }
-    self_introduction { FFaker::Tweet.tweet }
-    study_plan { FFaker::Tweet.body }
-    created_at { Time.zone.now }
+    home_tel { '070-0000-0000' }
+    self_introduction { '"자기소개"' }
+    study_plan { '"학습 계획"' }
+    created_at { DateTime.new(2020) }
   end
 end

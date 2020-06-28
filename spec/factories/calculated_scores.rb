@@ -6,7 +6,7 @@ FactoryBot.define do
     attendance_score { 15 }
     conversion_score { 150 }
     final_score { 180 }
-    created_at { Time.zone.now }
-    modified_at { Time.zone.now }
+    created_at { DateTime.new(2020) }
+    modified_at { DateTime.new(2020) }
   end
 end
