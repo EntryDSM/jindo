@@ -117,6 +117,8 @@ class User < ApplicationRecord
         birth_date: birth_date.strftime('%Y-%m-%d'),
         grade_type: grade_type,
         apply_type: apply_type,
+        address: address,
+        detail_address: detail_address,
         applicant_tel: applicant_tel,
         parent_tel: parent_tel,
         home_tel: home_tel,
@@ -137,7 +139,6 @@ class User < ApplicationRecord
     evaluation = response[:applicant_information][:evaluation]
 
     privacy[:school_name] = applicant_type.school.school_full_name
-    privacy[:school_address] = applicant_type.school.school_address
     privacy[:school_tel] = applicant_type.school_tel
     evaluation[:volunteer_time] = applicant_type.volunteer_time
     evaluation[:full_absent_count] = applicant_type.full_cut_count
@@ -166,7 +167,7 @@ class User < ApplicationRecord
   end
 
   def self.applicants_information(index, presence_filter = nil, filter_value = nil)
-    return nil if index < 1
+    return [] if index < 1
 
     case presence_filter
     when 0

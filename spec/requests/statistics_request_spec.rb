@@ -4,25 +4,26 @@ require_relative 'request_helpers'
 RSpec.describe 'Statistics', type: :request do
   before(:all) do
     set_database
+    @url_statistics = URL_PREFIX + '/statistics'
   end
 
   describe 'GET#index' do
     it '> return statistics information when area is nationwide' do
-      request('get', '/statistics', { area: 'nationwide' }, true)
+      request('get', @url_statistics, { area: 'nationwide' }, true)
 
       expect(User.statistics(false))
         .to(eql(JSON.parse(response.body, symbolize_names: true)))
     end
 
     it '> return statistics information when area is daejeon' do
-      request('get', '/statistics', { area: 'daejeon' }, true)
+      request('get', @url_statistics, { area: 'daejeon' }, true)
 
       expect(User.statistics(true))
         .to(eql(JSON.parse(response.body, symbolize_names: true)))
     end
 
     it '> return statistics information when area is all' do
-      request('get', '/statistics', { area: 'all' }, true)
+      request('get', @url_statistics, { area: 'all' }, true)
 
       total_applicant_count = User.count
 
@@ -38,14 +39,14 @@ RSpec.describe 'Statistics', type: :request do
     end
 
     it '> unauthorized token' do
-      request('get', '/statistics', { email: @admin.email }, false)
+      request('get', @url_statistics, { email: @admin.email }, false)
 
       expect(response.status).to equal(401)
     end
 
     it '> invalid type of token' do
       request('get',
-              '/statistics',
+              @url_statistics,
               { email: @user.email },
               JWT_BASE.create_refresh_token(email: @admin.email))
 

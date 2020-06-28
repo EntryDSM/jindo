@@ -27,6 +27,10 @@ group :development, :test do
   gem 'factory_bot_rails', '~> 5.2.0'
   # Use to load fake data
   gem 'ffaker', '~> 2.14.0'
+  # Use to clean database
+  gem 'database_cleaner-active_record', '~> 1.8.0'
+  # Use to measure code coverage
+  gem 'simplecov', '~> 0.18.5'
 end
 
 group :development do

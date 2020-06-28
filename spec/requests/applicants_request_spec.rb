@@ -4,24 +4,26 @@ require_relative 'request_helpers'
 RSpec.describe 'Applicants', type: :request do
   before(:all) do
     set_database
+    @url_applicant = URL_PREFIX + '/applicant'
+    @url_applicants = URL_PREFIX + '/applicants'
   end
 
   describe 'GET#show' do
     it '> return application information' do
-      request('get', '/applicant', { email: @user.email }, true)
+      request('get', @url_applicant, { email: @user.email }, true)
 
       expect(@user.applicant_information).to eql(JSON.parse(response.body, symbolize_names: true))
     end
 
     it '> unauthorized token' do
-      request('get', '/applicant', { email: @user.email }, false)
+      request('get', @url_applicant, { email: @user.email }, false)
 
       expect(response.status).to equal(401)
     end
 
     it '> invalid type of token' do
       request('get',
-              '/applicant',
+              @url_applicant,
               true,
               JWT_BASE.create_refresh_token(email: @admin.email))
 
@@ -30,7 +32,7 @@ RSpec.describe 'Applicants', type: :request do
 
     it '> invalid email' do
       request('get',
-              '/applicant',
+              @url_applicant,
               { email: 'hello_world@korea.korea' },
               true)
 
@@ -40,23 +42,22 @@ RSpec.describe 'Applicants', type: :request do
 
   describe 'GET#index' do
     it '> return application detail information' do
-      @index = 1
-      request('get', '/applicants', { index: @index }, true)
+      request('get', @url_applicants, { index: 1 }, true)
 
-      expect(applicants_information: User.applicants_information(@index))
+      expect(applicants_information: User.applicants_information(1))
         .to(eql(JSON.parse(response.body, symbolize_names: true)))
     end
 
     it '> unauthorized token' do
-      request('get', '/applicants', { index: @index })
+      request('get', @url_applicants, { index: 1 })
 
       expect(response.status).to equal(401)
     end
 
     it '> invalid type of token' do
       request('get',
-              '/applicants',
-              { index: @index },
+              @url_applicants,
+              { index: 1 },
               JWT_BASE.create_refresh_token(email: @admin.email))
 
       expect(response.status).to equal(403)
@@ -67,7 +68,7 @@ RSpec.describe 'Applicants', type: :request do
     it '> is_arrived successfully updated ' do
       is_arrived = @user.status.is_printed_application_arrived
 
-      request('patch', '/applicant',
+      request('patch', @url_applicant,
               { email: @user.email,
                 is_arrived: !is_arrived }, true)
 
@@ -79,7 +80,7 @@ RSpec.describe 'Applicants', type: :request do
     it '> is_paid successfully updated' do
       is_paid = @user.status.is_paid
 
-      request('patch', '/applicant',
+      request('patch', @url_applicant,
               { email: @user.email,
                 is_paid: !is_paid }, true)
 
@@ -91,7 +92,7 @@ RSpec.describe 'Applicants', type: :request do
     it '> is_final_submit successfully updated' do
       is_final_submit = @user.status.is_final_submit
 
-      request('patch', '/applicant',
+      request('patch', @url_applicant,
               { email: @user.email,
                 is_final_submit: !is_final_submit }, true)
 
@@ -101,14 +102,14 @@ RSpec.describe 'Applicants', type: :request do
     end
 
     it '> unauthorized token' do
-      request('patch', '/applicant', { email: @user.email }, false)
+      request('patch', @url_applicant, { email: @user.email }, false)
 
       expect(response.status).to equal(401)
     end
 
     it '> invalid type of token' do
       request('patch',
-              '/applicant',
+              @url_applicant,
               { email: @user.email },
               JWT_BASE.create_refresh_token(email: @admin.email))
 
@@ -117,7 +118,7 @@ RSpec.describe 'Applicants', type: :request do
 
     it '> invalid email' do
       request('patch',
-              '/applicant',
+              @url_applicant,
               { email: 'hello_world@korea.korea' },
               true)
 
