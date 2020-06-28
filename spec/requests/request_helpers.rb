@@ -1,6 +1,7 @@
 require 'jwt_base'
 
 JWT_BASE = JWTBase.new(ENV['SECRET_KEY_BASE'], 1.days, 2.weeks).freeze
+URL_PREFIX = '/v5/admin'.freeze
 
 def request(method, url, params = false, headers = false)
   parameters = {}
@@ -20,14 +21,10 @@ def set_database
   @admin = create(:admin)
   @token = JWT_BASE.create_access_token(email: @admin.email)
   @user = create(:user)
-  @grade_type = @user.grade_type.downcase + '_application'
-  create(:status, user_email: @user.email)
-  argument = if @grade_type == 'ged_application'
-               { user_email: @user.email }
-             else
-               { school_code: create(:school).school_code, user_email: @user.email }
-             end
 
-  create(@grade_type.to_sym, argument)
+  create(:status, user_email: @user.email)
+  create(:ungraduated_application,
+         school_code: create(:school).school_code,
+         user_email: @user.email)
   create(:calculated_score, user_email: @user.email)
 end

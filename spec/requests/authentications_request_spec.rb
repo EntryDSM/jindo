@@ -3,13 +3,14 @@ require_relative 'request_helpers'
 
 RSpec.describe 'Authentications', type: :request do
   before(:all) do
-    @admin = create(:admin, password: BCrypt::Password.create('q1w2e3r4'))
+    set_database
+    @url_auth = URL_PREFIX + '/auth'
   end
 
   describe 'POST#login' do
     it '> return access, refresh tokens' do
-      request('post', '/auth', { email: @admin.email,
-                                 password: 'q1w2e3r4' }, false)
+      request('post', @url_auth, { email: @admin.email,
+                                   password: 'q1w2e3r4' }, false)
 
       resp = JSON.parse(response.body)
 
@@ -20,8 +21,8 @@ RSpec.describe 'Authentications', type: :request do
     end
 
     it '> invalid email/password' do
-      request('post', '/auth', { email: 'invalid@email.com',
-                                 password: 'invalid' }, false)
+      request('post', @url_auth, { email: 'invalid@email.com',
+                                   password: 'invalid' }, false)
 
       expect(response.status).to equal(401)
     end
@@ -30,7 +31,7 @@ RSpec.describe 'Authentications', type: :request do
   describe 'PUT#refresh' do
     it '> return access token' do
       request('put',
-              '/auth',
+              @url_auth,
               { dummy: '' },
               JWT_BASE.create_refresh_token(email: @admin.email))
 
@@ -41,13 +42,13 @@ RSpec.describe 'Authentications', type: :request do
     end
 
     it '> unauthorized token' do
-      request('put', '/auth', { dummy: '' }, false)
+      request('put', @url_auth, { dummy: '' }, false)
 
       expect(response.status).to eql(401)
     end
 
     it '> invalid type of token' do
-      request('put', '/auth', false, true)
+      request('put', @url_auth, false, true)
 
       expect(response.status).to equal(403)
     end
