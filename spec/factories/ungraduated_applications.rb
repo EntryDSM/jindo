@@ -3,8 +3,8 @@ require_relative 'factory_bot_helpers'
 FactoryBot.define do
   factory :ungraduated_application do
     student_number { '30535' }
-    school_tel { telephone }
-    volunteer_time { rand(100) }
+    school_tel { '010-0000-0000' }
+    volunteer_time { '50' }
     full_cut_count { 0 }
     period_cut_count { 0 }
     late_count { 0 }
@@ -16,7 +16,7 @@ FactoryBot.define do
     science { 'A' }
     tech_and_home { 'A' }
     english { 'A' }
-    created_at { Time.zone.now }
-    modified_at { Time.zone.now }
+    created_at { DateTime.new(2020) }
+    modified_at { DateTime.new(2020) }
   end
 end
