@@ -28,6 +28,14 @@ jobs:
         with:
           ruby-version: 2.6.5
 
+      - name: cache dependencies
+        uses: actions/cache@v1
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-gem-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-gem-
+
       - name: install dependencies
         run: bundle install
 
