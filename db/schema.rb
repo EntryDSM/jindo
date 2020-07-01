@@ -60,6 +60,7 @@ ActiveRecord::Schema.define(version: 0) do
     t.text :self_introduction
     t.text :study_plan
     t.datetime :created_at
+    t.datetime :modified_at
   end
   change_column :user, :email, :string
 
