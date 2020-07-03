@@ -17,6 +17,12 @@ class User < ApplicationRecord
   FILTERS = %i[email exam_code school_name applicant_tel name].freeze
   USER_PER_PAGE = 12
 
+  MEISTER_PASSER_COUNT = 18
+  SOCIAL_PASSER_COUNT = 2
+  COMMON_PASSER_COUNT = 20
+  TOTAL_PASSER_COUNT = 40
+
+
   def self.score_distribution(key, value, is_daejeon)
     (70..150).step(10).each do |i|
       conversion_score_query = if i > 70
@@ -55,45 +61,28 @@ class User < ApplicationRecord
                             common_applicant_count +
                             social_applicant_count
 
-    meister_passer_count = if is_daejeon
-                             12
-                           else
-                             16
-                           end
-
-    common_passer_count = if is_daejeon
-                            18
-                          else
-                            30
-                          end
-
-    total_passer_count = if is_daejeon
-                           32
-                         else
-                           48
-                         end
-
     response = {
       meister_applicant: {
         applicant_count: meister_applicant_count,
         competition_rate: (meister_applicant_count.to_r /
-                           meister_passer_count).round(2).to_f
+                           MEISTER_PASSER_COUNT).round(2).to_f
       },
 
       common_applicant: {
         applicant_count: common_applicant_count,
         competition_rate: (common_applicant_count.to_r /
-                           common_passer_count).round(2).to_f
+                           COMMON_PASSER_COUNT).round(2).to_f
       },
 
       social_applicant: {
         applicant_count: social_applicant_count,
-        competition_rate: (social_applicant_count.to_r / 2).round(2).to_f
+        competition_rate: (social_applicant_count.to_r /
+                           SOCIAL_PASSER_COUNT).round(2).to_f
       },
 
       total_applicant_count: total_applicant_count,
       total_competition_rate: (total_applicant_count.to_r /
-                               total_passer_count).round(2).to_f
+                               TOTAL_PASSER_COUNT).round(2).to_f
     }
 
     response.each do |k, v|
