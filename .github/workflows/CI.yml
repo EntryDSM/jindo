@@ -5,7 +5,6 @@ on:
     branches:
       - master
       - development
-      - test-code
   pull_request:
     branches:
       - master
