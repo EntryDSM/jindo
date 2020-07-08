@@ -5,12 +5,12 @@ FactoryBot.define do
     email { 'wjd030811@dsm.hs.kr' }
     password { 'q1w2e3r4' }
     receipt_code { 1 }
-    apply_type { 0 }
-    additional_type { 0 }
-    grade_type { 1 }
+    apply_type { 'MEISTER' }
+    additional_type { 'NOT_APPLICABLE' }
+    grade_type { 'UNGRADUATED' }
     is_daejeon { 0 }
     name { '정우영' }
-    sex { 0 }
+    sex { 'MALE' }
     birth_date { '2005-01-01 00:00' }
     parent_name { '엄마' }
     parent_tel { '010-0000-0000' }
