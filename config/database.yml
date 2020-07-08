@@ -11,7 +11,7 @@ development:
 
 test:
   <<: *default
-  database: entry
+  database: testdb_jindo
   username: <%= ENV['JINDO_TEST_DATABASE_USERNAME'] %>
   password: <%= ENV['JINDO_TEST_DATABASE_PASSWORD'] %>
   host: <%= ENV['JINDO_TEST_DATABASE_HOST'] %>
