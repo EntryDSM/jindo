@@ -11,30 +11,200 @@ RSpec.describe 'Statistics', type: :request do
     it '> return statistics information when area is nationwide' do
       request('get', @url_statistics, { area: 'nationwide' }, true)
 
-      expect(User.statistics(false))
+      expected = {
+        meister_applicant: {
+          applicant_count: 1,
+          competition_rate: 0.06,
+          '-70': 0,
+          '71-80': 0,
+          '81-90': 0,
+          '91-100': 0,
+          '101-110': 0,
+          '111-120': 0,
+          '121-130': 0,
+          '131-140': 0,
+          '141-150': 1
+        },
+        common_applicant: {
+          applicant_count: 0,
+          competition_rate: 0.0,
+          '-70': 0,
+          '71-80': 0,
+          '81-90': 0,
+          '91-100': 0,
+          '101-110': 0,
+          '111-120': 0,
+          '121-130': 0,
+          '131-140': 0,
+          '141-150': 0
+        },
+        social_applicant: {
+          applicant_count: 0,
+          competition_rate: 0.0,
+          '-70': 0,
+          '71-80': 0,
+          '81-90': 0,
+          '91-100': 0,
+          '101-110': 0,
+          '111-120': 0,
+          '121-130': 0,
+          '131-140': 0,
+          '141-150': 0
+        },
+        total_applicant_count: 1,
+        total_competition_rate: 0.03
+      }
+
+      expect(expected)
         .to(eql(JSON.parse(response.body, symbolize_names: true)))
     end
 
     it '> return statistics information when area is daejeon' do
       request('get', @url_statistics, { area: 'daejeon' }, true)
 
-      expect(User.statistics(true))
-        .to(eql(JSON.parse(response.body, symbolize_names: true)))
+      expected = {
+        meister_applicant: {
+          applicant_count: 0,
+          competition_rate: 0.0,
+          '-70': 0,
+          '71-80': 0,
+          '81-90': 0,
+          '91-100': 0,
+          '101-110': 0,
+          '111-120': 0,
+          '121-130': 0,
+          '131-140': 0,
+          '141-150': 0
+        },
+        common_applicant: {
+          applicant_count: 0,
+          competition_rate: 0.0,
+          '-70': 0,
+          '71-80': 0,
+          '81-90': 0,
+          '91-100': 0,
+          '101-110': 0,
+          '111-120': 0,
+          '121-130': 0,
+          '131-140': 0,
+          '141-150': 0
+        },
+        social_applicant: {
+          applicant_count: 0,
+          competition_rate: 0.0,
+          '-70': 0,
+          '71-80': 0,
+          '81-90': 0,
+          '91-100': 0,
+          '101-110': 0,
+          '111-120': 0,
+          '121-130': 0,
+          '131-140': 0,
+          '141-150': 0
+        },
+        total_applicant_count: 0,
+        total_competition_rate: 0.0
+      }
+
+      expect(expected).to(eql(JSON.parse(response.body, symbolize_names: true)))
     end
 
     it '> return statistics information when area is all' do
       request('get', @url_statistics, { area: 'all' }, true)
 
-      total_applicant_count = User.count
+      expected = {
+        nationwide: {
+          meister_applicant: {
+            applicant_count: 1,
+            competition_rate: 0.06,
+            '-70': 0,
+            '71-80': 0,
+            '81-90': 0,
+            '91-100': 0,
+            '101-110': 0,
+            '111-120': 0,
+            '121-130': 0,
+            '131-140': 0,
+            '141-150': 1
+          },
+          common_applicant: {
+            applicant_count: 0,
+            competition_rate: 0.0,
+            '-70': 0,
+            '71-80': 0,
+            '81-90': 0,
+            '91-100': 0,
+            '101-110': 0,
+            '111-120': 0,
+            '121-130': 0,
+            '131-140': 0,
+            '141-150': 0
+          },
+          social_applicant: {
+            applicant_count: 0,
+            competition_rate: 0.0,
+            '-70': 0,
+            '71-80': 0,
+            '81-90': 0,
+            '91-100': 0,
+            '101-110': 0,
+            '111-120': 0,
+            '121-130': 0,
+            '131-140': 0,
+            '141-150': 0
+          },
+          total_applicant_count: 1,
+          total_competition_rate: 0.03
+        },
 
-      all_valid_response = {
-        nationwide: User.statistics(false),
-        daejeon: User.statistics(true),
-        total_applicant_count: total_applicant_count,
-        total_competition_rate: (total_applicant_count.to_r / 80).round(2).to_f
+        daejeon: {
+          meister_applicant: {
+            applicant_count: 0,
+            competition_rate: 0.0,
+            '-70': 0,
+            '71-80': 0,
+            '81-90': 0,
+            '91-100': 0,
+            '101-110': 0,
+            '111-120': 0,
+            '121-130': 0,
+            '131-140': 0,
+            '141-150': 0
+          },
+          common_applicant: {
+            applicant_count: 0,
+            competition_rate: 0.0,
+            '-70': 0,
+            '71-80': 0,
+            '81-90': 0,
+            '91-100': 0,
+            '101-110': 0,
+            '111-120': 0,
+            '121-130': 0,
+            '131-140': 0,
+            '141-150': 0
+          },
+          social_applicant: {
+            applicant_count: 0,
+            competition_rate: 0.0,
+            '-70': 0,
+            '71-80': 0,
+            '81-90': 0,
+            '91-100': 0,
+            '101-110': 0,
+            '111-120': 0,
+            '121-130': 0,
+            '131-140': 0,
+            '141-150': 0
+          },
+          total_applicant_count: 0,
+          total_competition_rate: 0.0
+        },
+        "total_applicant_count": 1,
+        "total_competition_rate": 0.01
       }
 
-      expect(all_valid_response)
+      expect(expected)
         .to(eql(JSON.parse(response.body, symbolize_names: true)))
     end
 

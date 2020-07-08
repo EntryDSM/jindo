@@ -12,7 +12,42 @@ RSpec.describe 'Applicants', type: :request do
     it '> return application information' do
       request('get', @url_applicant, { email: @user.email }, true)
 
-      expect(@user.applicant_information).to eql(JSON.parse(response.body, symbolize_names: true))
+      expected = {
+        applicant_information: {
+          status: {
+            is_paid: true,
+            is_arrived: true,
+            is_final_submit: true
+          },
+          privacy: {
+            user_photo: '/home/ubuntu/image.jpg',
+            name: '정우영',
+            birth_date: '2005-01-01',
+            grade_type: 'UNGRADUATED',
+            apply_type: 'MEISTER',
+            address: '"주소"',
+            detail_address: '"상세주소"',
+            applicant_tel: '010-0000-0000',
+            parent_tel: '010-0000-0000',
+            home_tel: '070-0000-0000',
+            email: 'wjd030811@dsm.hs.kr',
+            school_name: '수완하나중학교',
+            school_tel: '010-0000-0000'
+          },
+          evaluation: {
+            conversion_score: 150,
+            self_introduction: '"자기소개"',
+            study_plan: '"학습 계획"',
+            volunteer_time: 50,
+            full_absent_count: 0,
+            early_leave_count: 0,
+            late_count: 0,
+            period_absent_count: 0
+          }
+        }
+      }
+
+      expect(expected).to eql(JSON.parse(response.body, symbolize_names: true))
     end
 
     it '> unauthorized token' do
@@ -44,8 +79,19 @@ RSpec.describe 'Applicants', type: :request do
     it '> return application detail information' do
       request('get', @url_applicants, { index: 1 }, true)
 
-      expect(applicants_information: User.applicants_information(1))
-        .to(eql(JSON.parse(response.body, symbolize_names: true)))
+      expected = {
+        applicants_information: [{
+          examination_number: '123456',
+          name: '정우영',
+          is_daejeon: false,
+          apply_type: 'MEISTER',
+          is_arrived: true,
+          is_paid: true,
+          is_final_submit: true
+        }]
+      }
+
+      expect(expected).to(eql(JSON.parse(response.body, symbolize_names: true)))
     end
 
     it '> unauthorized token' do
