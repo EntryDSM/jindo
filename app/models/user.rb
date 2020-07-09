@@ -184,7 +184,7 @@ class User < ApplicationRecord
       },
 
       evaluation: {
-        conversion_score: calculated_score.conversion_score,
+        conversion_score: calculated_score.conversion_score.to_f,
         self_introduction: self_introduction,
         study_plan: study_plan
       }
@@ -203,9 +203,6 @@ class User < ApplicationRecord
     evaluation[:early_leave_count] = applicant_type.early_leave_count
     evaluation[:late_count] = applicant_type.late_count
     evaluation[:period_absent_count] = applicant_type.period_cut_count
-
-    response[:applicant_information][:privacy] = privacy
-    response[:applicant_information][:evaluation] = evaluation
 
     response
   end

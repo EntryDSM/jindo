@@ -23,5 +23,6 @@ FactoryBot.define do
     self_introduction { '"자기소개"' }
     study_plan { '"학습 계획"' }
     created_at { DateTime.new(2020) }
+    modified_at { DateTime.new(2020) }
   end
 end

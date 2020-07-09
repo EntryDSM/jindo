@@ -35,7 +35,7 @@ RSpec.describe 'Applicants', type: :request do
             school_tel: '010-0000-0000'
           },
           evaluation: {
-            conversion_score: 150,
+            conversion_score: 150.0,
             self_introduction: '"자기소개"',
             study_plan: '"학습 계획"',
             volunteer_time: 50,
