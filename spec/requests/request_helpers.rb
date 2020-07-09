@@ -22,9 +22,9 @@ def set_database
   @token = JWT_BASE.create_access_token(email: @admin.email)
   @user = create(:user)
 
-  create(:status, user_email: @user.email)
+  create(:status, user_receipt_code: @user.receipt_code)
   create(:ungraduated_application,
          school_code: create(:school).school_code,
-         user_email: @user.email)
-  create(:calculated_score, user_email: @user.email)
+         user_receipt_code: @user.receipt_code)
+  create(:calculated_score, user_receipt_code: @user.receipt_code)
 end

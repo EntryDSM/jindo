@@ -1,5 +1,5 @@
 class User < ApplicationRecord
-  self.primary_key = :email
+  self.primary_key = :receipt_code
 
   enum apply_type: { COMMON: 'COMMON', MEISTER: 'MEISTER',
                      SOCIAL_ONE_PARENT: 'SOCIAL_ONE_PARENT',
@@ -14,11 +14,11 @@ class User < ApplicationRecord
   enum grade_type: { GED: 'GED', UNGRADUATED: 'UNGRADUATED', GRADUATED: 'GRADUATED' }
   enum sex: { MALE: 'MALE', FEMALE: 'FEMALE' }
 
-  has_one :ged_application, foreign_key: :user_email
-  has_one :graduated_application, foreign_key: :user_email
-  has_one :ungraduated_application, foreign_key: :user_email
-  has_one :status, foreign_key: :user_email
-  has_one :calculated_score, foreign_key: :user_email
+  has_one :ged_application, foreign_key: :user_receipt_code
+  has_one :graduated_application, foreign_key: :user_receipt_code
+  has_one :ungraduated_application, foreign_key: :user_receipt_code
+  has_one :status, foreign_key: :user_receipt_code
+  has_one :calculated_score, foreign_key: :user_receipt_code
 
   FILTERS = %i[email exam_code school_name applicant_tel name].freeze
   USER_PER_PAGE = 12
