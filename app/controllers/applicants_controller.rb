@@ -29,6 +29,11 @@ class ApplicantsController < ApplicationController
     user_status.update!(is_printed_application_arrived: params[:is_arrived]) if params[:is_arrived]
     user_status.update!(is_final_submit: params[:is_final_submit]) if params[:is_final_submit]
 
-    render status: 204
+    render status: :no_content
+  end
+
+  def create
+    Admin.create_exam_code
+    render status: :ok
   end
 end
