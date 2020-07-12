@@ -11,6 +11,7 @@ jobs:
     env:
       SECRET_KEY_BASE: ${{ secrets.SECRET_KEY_BASE }}
       JINDO_DATABASE_PASSWORD: ${{ secrets.JINDO_DATABASE_PASSWORD }}
+      TMAP_APP_KEY: ${{ secrets.TMAP_APP_KEY }}
 
     steps:
       - uses: actions/checkout@v2
