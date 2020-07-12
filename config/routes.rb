@@ -8,5 +8,6 @@ Rails.application.routes.draw do
     get '/applicant', to: 'applicants#show'
     get '/applicants', to: 'applicants#index'
     patch '/applicant', to: 'applicants#update'
+    post '/applicants', to: 'applicants#create'
   end
 end
