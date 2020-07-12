@@ -1,6 +1,6 @@
-class ApplicationController < ActionController::API
-  require 'jwt_base'
+require 'jwt_base'
 
+class ApplicationController < ActionController::API
   @@jwt_base = JWTBase.new(ENV['SECRET_KEY_BASE'], 1.days, 2.weeks)
 
   def token
