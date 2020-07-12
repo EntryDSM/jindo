@@ -1,4 +1,4 @@
-name: CI
+name: CI/CD
 
 on:
   push:
@@ -11,7 +11,7 @@ on:
       - development
 
 jobs:
-  build:
+  CI:
     runs-on: ubuntu-latest
     env:
       SECRET_KEY_BASE: ${{ secrets.SECRET_KEY_BASE }}
@@ -43,3 +43,25 @@ jobs:
 
       - name: run tests
         run: bundle exec rake spec
+
+  CD:
+    needs: CI
+    runs-on: ubuntu-latest
+    env:
+      SECRET_KEY_BASE: ${{ secrets.SECRET_KEY_BASE }}
+      JINDO_DATABASE_PASSWORD: ${{ secrets.JINDO_DATABASE_PASSWORD }}
+      TMAP_APP_KEY: ${{ secrets.TMAP_APP_KEY }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: build docker image
+        run: docker build -t jindo .
+
+      - name: publish to Registry
+        uses: elgohr/Publish-Docker-Github-Action@master
+        with:
+          name: jindo
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          registry: ${{ secrets.DOCKER_REGISTRY }}
