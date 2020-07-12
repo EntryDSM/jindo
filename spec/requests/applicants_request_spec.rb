@@ -25,7 +25,7 @@ RSpec.describe 'Applicants', type: :request do
             birth_date: '2005-01-01',
             grade_type: 'UNGRADUATED',
             apply_type: 'MEISTER',
-            address: '"주소"',
+            address: '광주광역시',
             detail_address: '"상세주소"',
             applicant_tel: '010-0000-0000',
             parent_tel: '010-0000-0000',
@@ -169,6 +169,15 @@ RSpec.describe 'Applicants', type: :request do
               true)
 
       expect(response.status).to equal(404)
+    end
+  end
+
+  describe 'POST#applicants' do
+    it 'generate exam code' do
+      request('post', @url_applicants, false, true)
+      expect(User.find_by_receipt_code(@user.receipt_code)
+                  .status
+                  .exam_code).to eql('22001')
     end
   end
 end

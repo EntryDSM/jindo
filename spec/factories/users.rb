@@ -15,7 +15,7 @@ FactoryBot.define do
     parent_name { '엄마' }
     parent_tel { '010-0000-0000' }
     applicant_tel { '010-0000-0000' }
-    address { '"주소"' }
+    address { '광주광역시' }
     detail_address { '"상세주소"' }
     post_code { '12345' }
     user_photo { '/home/ubuntu/image.jpg' }
