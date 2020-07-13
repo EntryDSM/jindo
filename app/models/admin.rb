@@ -50,7 +50,9 @@ class Admin < ApplicationRecord
           distance_information[user.receipt_code] = route_request['features'][0]['properties']['totalDistance']
         end
 
-        users_sorted_by_distance = distance.sort_by { |_, v| v }.map { |v| v[0] }
+        users_sorted_by_distance = distance.sort_by { |_, v| v }
+                                           .map { |v| v[0] }
+                                           .reverse
         users_sorted_by_distance.inject(1) do |reciept_code, count|
           User.find_by_receipt_code(reciept_code)
               .status
