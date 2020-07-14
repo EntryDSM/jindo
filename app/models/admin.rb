@@ -1,11 +1,11 @@
 require 'net/http'
 
 class Admin < ApplicationRecord
-  validates_uniqueness_of :email, presence: true, case_sensitive: true
-  validates :password, presence: true
-
   include BCrypt
   include Net
+
+  validates_uniqueness_of :email, presence: true, case_sensitive: true
+  validates :password, presence: true
 
   self.primary_key = :email
 
@@ -40,7 +40,7 @@ class Admin < ApplicationRecord
       applies.each_with_index do |area, area_index|
         distance = area.each_with_object({}) do |user, distance_information|
           convert_request = JSON.parse(request("#{CONVERT_ADDRESS_API}?version=2&searchTypCd=NtoO&"\
-                                    "reqAdd=#{user.address}&appKey=#{ENV['TMAP_APP_KEY']}"))
+                                                   "reqAdd=#{user.address}&appKey=#{ENV['TMAP_APP_KEY']}"))
           x = convert_request['ConvertAdd']['oldLon']
           y = convert_request['ConvertAdd']['oldLat']
 
@@ -68,7 +68,7 @@ class Admin < ApplicationRecord
   def self.request(url, body = nil)
     url = URI(URI.escape(url))
 
-    https = Net::HTTP.new(url.host, url.port)
+    https = HTTP.new(url.host, url.port)
     https.use_ssl = true
     request = if body
                 HTTP::Post.new(url)
