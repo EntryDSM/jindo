@@ -1,5 +1,3 @@
-require_relative 'factory_bot_helpers'
-
 FactoryBot.define do
   factory :graduated_application do
     student_number { '30535' }

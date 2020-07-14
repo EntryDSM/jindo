@@ -1,5 +1,3 @@
-require_relative 'factory_bot_helpers'
-
 FactoryBot.define do
   factory :calculated_score do
     volunteer_score { 15 }

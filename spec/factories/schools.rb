@@ -1,5 +1,3 @@
-require_relative 'factory_bot_helpers'
-
 FactoryBot.define do
   factory :school do
     school_code { '123456' }

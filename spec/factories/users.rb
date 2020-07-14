@@ -1,5 +1,3 @@
-require_relative 'factory_bot_helpers'
-
 FactoryBot.define do
   factory :user do
     email { 'wjd030811@dsm.hs.kr' }
