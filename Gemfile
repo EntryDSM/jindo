@@ -25,8 +25,6 @@ group :development, :test do
   gem 'rspec-rails', '~> 4.0.0'
   # Use to create test data
   gem 'factory_bot_rails', '~> 5.2.0'
-  # Use to load fake data
-  gem 'ffaker', '~> 2.14.0'
   # Use to clean database
   gem 'database_cleaner-active_record', '~> 1.8.0'
   # Use to measure code coverage
