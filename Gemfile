@@ -29,6 +29,8 @@ group :development, :test do
   gem 'database_cleaner-active_record', '~> 1.8.0'
   # Use to measure code coverage
   gem 'simplecov', '~> 0.18.5'
+  # Use to codecov
+  gem 'codecov', '~> 0.2.1'
 end
 
 group :development do
