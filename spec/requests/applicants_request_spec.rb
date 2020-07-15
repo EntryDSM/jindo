@@ -1,5 +1,5 @@
 require 'rails_helper'
-require_relative 'request_helpers'
+require_relative 'request_helper'
 
 RSpec.describe 'Applicants', type: :request do
   before(:all) do
