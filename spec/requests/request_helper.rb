@@ -10,7 +10,7 @@ def request(method, url, params = false, headers = false)
 
   if headers == true
     parameters[:headers] = { Authorization: "Bearer #{@token}" }
-  elsif params
+  elsif headers
     parameters[:headers] = { Authorization: "Bearer #{headers}" }
   end
 
