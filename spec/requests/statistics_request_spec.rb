@@ -211,7 +211,7 @@ RSpec.describe 'Statistics', type: :request do
     it '> unauthorized token' do
       request('get', @url_statistics, { email: @admin.email }, false)
 
-      expect(response.status).to equal(401)
+      expect(response.status).to equal(403)
     end
 
     it '> invalid type of token' do
