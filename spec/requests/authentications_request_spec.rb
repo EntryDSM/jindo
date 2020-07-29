@@ -44,7 +44,7 @@ RSpec.describe 'Authentications', type: :request do
     it '> unauthorized token' do
       request('put', @url_auth, { dummy: '' }, false)
 
-      expect(response.status).to eql(401)
+      expect(response.status).to eql(403)
     end
 
     it '> invalid type of token' do

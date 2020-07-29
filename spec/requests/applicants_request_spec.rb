@@ -97,7 +97,7 @@ RSpec.describe 'Applicants', type: :request do
     it '> unauthorized token' do
       request('get', @url_applicants, { index: 1 })
 
-      expect(response.status).to equal(401)
+      expect(response.status).to equal(403)
     end
 
     it '> invalid type of token' do
@@ -106,7 +106,7 @@ RSpec.describe 'Applicants', type: :request do
               { index: 1 },
               JWT_BASE.create_refresh_token(email: @admin.email))
 
-      expect(response.status).to equal(401)
+      expect(response.status).to equal(403)
     end
   end
 
@@ -150,7 +150,7 @@ RSpec.describe 'Applicants', type: :request do
     it '> unauthorized token' do
       request('patch', @url_applicant, { email: @user.email }, false)
 
-      expect(response.status).to equal(401)
+      expect(response.status).to equal(403)
     end
 
     it '> invalid type of token' do
