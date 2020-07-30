@@ -16,5 +16,6 @@ FactoryBot.define do
     english { 'A' }
     created_at { DateTime.new(2020) }
     modified_at { DateTime.new(2020) }
+    graduated_date { DateTime.new(2020) }
   end
 end
