@@ -179,7 +179,6 @@ class User < ApplicationRecord
         detail_address: detail_address,
         applicant_tel: applicant_tel,
         parent_tel: parent_tel,
-        home_tel: home_tel,
         email: email
       },
 

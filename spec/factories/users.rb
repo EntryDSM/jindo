@@ -17,7 +17,6 @@ FactoryBot.define do
     detail_address { '"상세주소"' }
     post_code { '12345' }
     user_photo { '/home/ubuntu/image.jpg' }
-    home_tel { '070-0000-0000' }
     self_introduction { '"자기소개"' }
     study_plan { '"학습 계획"' }
     created_at { DateTime.new(2020) }

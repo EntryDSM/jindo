@@ -29,7 +29,6 @@ RSpec.describe 'Applicants', type: :request do
             detail_address: '"상세주소"',
             applicant_tel: '010-0000-0000',
             parent_tel: '010-0000-0000',
-            home_tel: '070-0000-0000',
             email: 'wjd030811@dsm.hs.kr',
             school_name: '수완하나중학교',
             school_tel: '010-0000-0000'
