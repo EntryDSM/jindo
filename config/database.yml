@@ -19,6 +19,7 @@ test:
 
 production:
   <<: *default
-  database: Jindo_production
-  username: Jindo
+  database: entry
+  username: <%= ENV['JINDO_DATABASE_USERNAME'] %>
   password: <%= ENV['JINDO_DATABASE_PASSWORD'] %>
+  host: <%= ENV['JINDO_DATABASE_HOST'] %>
