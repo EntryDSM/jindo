@@ -191,18 +191,33 @@ class User < ApplicationRecord
 
     return response if grade_type == 'GED'
 
-    applicant_type = send(grade_type.downcase + '_application')
     privacy = response[:applicant_information][:privacy]
     evaluation = response[:applicant_information][:evaluation]
 
-    privacy[:school_name] = applicant_type.school.school_full_name
-    privacy[:school_tel] = applicant_type.school_tel
-    evaluation[:volunteer_time] = applicant_type.volunteer_time
-    evaluation[:full_absent_count] = applicant_type.full_cut_count
-    evaluation[:early_leave_count] = applicant_type.early_leave_count
-    evaluation[:late_count] = applicant_type.late_count
-    evaluation[:period_absent_count] = applicant_type.period_cut_count
+    privacy[:school_name] = flexible_grade_type.school.school_full_name
+    privacy[:school_tel] = flexible_grade_type.school_tel
+    evaluation[:volunteer_time] = flexible_grade_type.volunteer_time
+    evaluation[:full_absent_count] = flexible_grade_type.full_cut_count
+    evaluation[:early_leave_count] = flexible_grade_type.early_leave_count
+    evaluation[:late_count] = flexible_grade_type.late_count
+    evaluation[:period_absent_count] = flexible_grade_type.period_cut_count
 
     response
+  end
+
+  def applicant_contact
+    contacts = { applicant_contact: {
+      email: current_user.email,
+      applicant_tel: current_user.applicant_tel,
+      parent_tel: current_user.parent_tel
+    } }
+
+    return if grade_type == 'GED'
+
+    contacts[:school_tel] = flexible_grade_type.school_tel
+  end
+
+  def flexible_grade_type
+    send(grade_type.downcase + '_application')
   end
 end
