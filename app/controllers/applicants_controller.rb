@@ -4,8 +4,13 @@ class ApplicantsController < ApplicationController
   def show
     return render status: :not_found unless current_user
 
-    render json: current_user.applicant_information,
-           status: :ok
+    if current_user.status.is_final_submit
+      render json: current_user.applicant_information,
+             status: :ok
+    else
+      render current_user.applicant_contact,
+             status: :locked
+    end
   end
 
   def index
