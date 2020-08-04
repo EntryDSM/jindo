@@ -1,9 +1,6 @@
 FROM ruby:2.6.5
 MAINTAINER JeongWooYeong(wjd030811@gmail.com)
 
-ENV SECRET_KEY_BASE $SECRET_KEY_BASE
-ENV JINDO_DATABASE_PASSWORD $JINDO_DATABASE_PASSWORD
-
 RUN apt-get update && \
     apt-get install -y \
     default-libmysqlclient-dev \
@@ -20,3 +17,5 @@ WORKDIR jindo
 RUN bundle install
 
 EXPOSE 3000
+
+RUN RAILS_ENV=production rails s -d
