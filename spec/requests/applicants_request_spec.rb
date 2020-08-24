@@ -76,12 +76,23 @@ RSpec.describe 'Applicants', type: :request do
 
   describe 'GET#index' do
     it '> return application detail information' do
-      request('get', @url_applicants, { index: 1 }, true)
+      request('get',
+              @url_applicants,
+              { index: 1,
+                is_daejeon: false,
+                is_nationwide: true,
+                not_arrived: false,
+                not_paid: false,
+                is_meister: true },
+              true)
 
       expected = {
+        max_index: 1,
+        user_per_page: 12,
         applicants_information: [{
           examination_number: '123456',
           name: '정우영',
+          email: 'wjd030811@dsm.hs.kr',
           is_daejeon: false,
           apply_type: 'MEISTER',
           is_arrived: true,

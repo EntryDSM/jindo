@@ -18,11 +18,17 @@ class ApplicantsController < ApplicationController
 
     presence_index = params.values_at(*User::FILTERS).index { |value| !value.nil? }
     valid_filter = params[User::FILTERS[presence_index]] if presence_index
-    apps_info = User.applicants_information(params[:index].to_i,
-                                            presence_index,
-                                            valid_filter)
 
-    render json: { applicants_information: apps_info },
+    render json: User.applicants_information(params[:index].to_i,
+                                             presence_index,
+                                             valid_filter,
+                                             is_daejeon: to_bool(params[:is_daejeon]),
+                                             is_nationwide: to_bool(params[:is_nationwide]),
+                                             not_arrived: to_bool(params[:not_arrived]),
+                                             not_paid: to_bool(params[:not_paid]),
+                                             is_common: to_bool(params[:is_common]),
+                                             is_meister: to_bool(params[:is_meister]),
+                                             is_social: to_bool(params[:is_social])),
            status: :ok
   end
 
@@ -40,5 +46,11 @@ class ApplicantsController < ApplicationController
   def create
     Admin.create_exam_code
     render status: :ok
+  end
+
+  private
+
+  def to_bool(bool)
+    ActiveModel::Type::Boolean.new.cast(bool)
   end
 end

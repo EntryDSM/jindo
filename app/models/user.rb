@@ -97,17 +97,25 @@ class User < ApplicationRecord
     end
   end
 
-  def self.applicants_information(index, presence_filter = nil, filter_value = nil)
+  def self.applicants_information(index, presence_filter = nil, filter_value = nil, **filters)
     return [] if index < 1
 
+    searched_result = search(presence_filter, filter_value)
+    filtered_result = filter(searched_result, **filters)
+
+    {
+      max_index: filtered_result.count / USER_PER_PAGE + 1,
+      user_per_page: USER_PER_PAGE,
+      applicants_information: filtered_result[(index - 1) * USER_PER_PAGE,
+                                              index * USER_PER_PAGE - 1]
+    }
+  end
+
+  def self.search(presence_filter, filter_value)
     case presence_filter
     when 0
-      User.where('email LIKE ?', "%#{filter_value}%")
-          .order(created_at: :desc)
-          .offset((index - 1) * USER_PER_PAGE)
-          .limit(USER_PER_PAGE)
-          .map(&:applicants_information)
-          .compact
+      where('email LIKE ?', "%#{filter_value}%").order(created_at: :desc)
+                                                .map(&:applicants_information)
     when 1
       status = Status.find_by_exam_code(filter_value)
       return [] if status.nil?
@@ -122,29 +130,47 @@ class User < ApplicationRecord
       graduated_user = GraduatedApplication.where('user_email IN (?)', graduated_email)
       ungraduated_user = UngraduatedApplication.where('user_email IN (?)', ungraduated_email)
 
-      users = graduated_user.map { |app| app.user.applicants_information }.compact +
-              ungraduated_user.map { |app| app.user.applicants_information }.compact
-
-      users[(index - 1) * USER_PER_PAGE, index * USER_PER_PAGE - 1]
+      graduated_user.map { |app| app.user.applicants_information } +
+        ungraduated_user.map { |app| app.user.applicants_information }
     when 3
-      user = User.find_by_applicant_tel(filter_value)
+      user = find_by_applicant_tel(filter_value)
       return [] if user.nil?
 
       [user.applicants_information]
     when 4
-      User.where('name LIKE ?', "%#{filter_value}%")
-          .order(created_at: :desc)
-          .offset((index - 1) * USER_PER_PAGE)
-          .limit(USER_PER_PAGE)
-          .map(&:applicants_information)
-          .compact
+      where('name LIKE ?', "%#{filter_value}%").order(created_at: :desc)
+                                               .map(&:applicants_information)
     else
-      User.order(created_at: :desc)
-          .offset((index - 1) * USER_PER_PAGE)
-          .limit(USER_PER_PAGE)
-          .map(&:applicants_information)
-          .compact
-    end
+      order(created_at: :desc).map(&:applicants_information)
+    end.compact
+  end
+
+  def self.filter(searched_result, **filters)
+    searched_result.map do |result|
+      unless filters[:is_daejeon].nil?
+        next unless result[:is_daejeon] == filters[:is_daejeon]
+      end
+      unless filters[:is_nationwide].nil?
+        next unless result[:is_daejeon] != filters[:is_nationwide]
+      end
+      unless filters[:not_arrived].nil?
+        next unless result[:is_arrived] != filters[:not_arrived]
+      end
+      unless filters[:not_paid].nil?
+        next unless result[:is_paid] != filters[:not_paid]
+      end
+      unless filters[:is_common].nil?
+        next unless filters[:is_common] == (result[:apply_type] == 'COMMON')
+      end
+      unless filters[:is_meister].nil?
+        next unless filters[:is_meister] == (result[:apply_type] == 'MEISTER')
+      end
+      unless filters[:is_social].nil?
+        next unless filters[:is_social] != %w[COMMON MEISTER].include?(result[:apply_type])
+      end
+
+      result
+    end.compact
   end
 
   def applicants_information
@@ -153,6 +179,7 @@ class User < ApplicationRecord
     {
       examination_number: status.exam_code,
       name: name,
+      email: email,
       is_daejeon: is_daejeon,
       apply_type: apply_type,
       is_arrived: status.is_printed_application_arrived,
