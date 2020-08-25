@@ -98,8 +98,6 @@ class User < ApplicationRecord
   end
 
   def self.applicants_information(index, presence_filter = nil, filter_value = nil, **filters)
-    return [] if index < 1
-
     searched_result = search(presence_filter, filter_value)
     filtered_result = filter(searched_result, **filters)
 

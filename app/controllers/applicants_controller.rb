@@ -15,6 +15,7 @@ class ApplicantsController < ApplicationController
 
   def index
     params.require(:index)
+    return render status: :bad_request unless params[:index].to_i.positive?
 
     presence_index = params.values_at(*User::FILTERS).index { |value| !value.nil? }
     valid_filter = params[User::FILTERS[presence_index]] if presence_index
