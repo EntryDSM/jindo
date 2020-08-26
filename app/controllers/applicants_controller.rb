@@ -8,7 +8,7 @@ class ApplicantsController < ApplicationController
       render json: current_user.applicant_information,
              status: :ok
     else
-      render current_user.applicant_contact,
+      render json: current_user.applicant_contact,
              status: :locked
     end
   end
