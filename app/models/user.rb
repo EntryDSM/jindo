@@ -232,14 +232,15 @@ class User < ApplicationRecord
 
   def applicant_contact
     contacts = { applicant_contact: {
-      email: current_user.email,
-      applicant_tel: current_user.applicant_tel,
-      parent_tel: current_user.parent_tel
+      email: email,
+      applicant_tel: applicant_tel,
+      parent_tel: parent_tel
     } }
 
     return if grade_type == 'GED'
 
     contacts[:school_tel] = flexible_grade_type.school_tel
+    contacts
   end
 
   def flexible_grade_type
