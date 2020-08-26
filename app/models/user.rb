@@ -237,7 +237,7 @@ class User < ApplicationRecord
       parent_tel: parent_tel
     } }
 
-    return if grade_type == 'GED'
+    return contacts if grade_type == 'GED'
 
     contacts[:school_tel] = flexible_grade_type.school_tel
     contacts
