@@ -17,7 +17,7 @@ RSpec.describe 'Authentications', type: :request do
       JWT_BASE.refresh_token_required(resp['refresh_token'])
       payload = JWT_BASE.jwt_required(resp['access_token'])
 
-      expect(payload['email']).to eql(@admin.email)
+      expect(payload['identity']).to eql(@admin.email)
     end
 
     it '> invalid email/password' do
@@ -33,12 +33,12 @@ RSpec.describe 'Authentications', type: :request do
       request('put',
               @url_auth,
               { dummy: '' },
-              JWT_BASE.create_refresh_token(email: @admin.email))
+              JWT_BASE.create_refresh_token(identity: @admin.email))
 
       resp = JSON.parse(response.body)
       payload = JWT_BASE.jwt_required(resp['access_token'])
 
-      expect(payload['email']).to eql(@admin.email)
+      expect(payload['identity']).to eql(@admin.email)
     end
 
     it '> unauthorized token' do
