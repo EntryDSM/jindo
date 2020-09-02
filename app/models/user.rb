@@ -158,13 +158,13 @@ class User < ApplicationRecord
         next unless result[:is_daejeon] == filters[:is_daejeon]
       end
       unless filters[:is_nationwide].nil?
-        next unless result[:is_daejeon] != filters[:is_nationwide]
+        next unless result[:is_daejeon] == !filters[:is_nationwide]
       end
       unless filters[:not_arrived].nil?
-        next unless result[:is_arrived] != filters[:not_arrived]
+        next unless result[:is_arrived] == !filters[:not_arrived]
       end
       unless filters[:not_paid].nil?
-        next unless result[:is_paid] != filters[:not_paid]
+        next unless result[:is_paid] == !filters[:not_paid]
       end
       unless filters[:is_common].nil?
         next unless filters[:is_common] == (result[:apply_type] == 'COMMON')
@@ -173,7 +173,7 @@ class User < ApplicationRecord
         next unless filters[:is_meister] == (result[:apply_type] == 'MEISTER')
       end
       unless filters[:is_social].nil?
-        next unless filters[:is_social] != %w[COMMON MEISTER].include?(result[:apply_type])
+        next unless filters[:is_social] == !['COMMON', 'MEISTER', nil].include?(result[:apply_type])
       end
 
       result
