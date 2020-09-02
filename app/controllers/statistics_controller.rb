@@ -4,7 +4,7 @@ class StatisticsController < ApplicationController
   def index
     params.require(:area)
 
-    total_applicant_count = User.count
+    total_applicant_count = User.joins(:status).where('is_final_submit = ?', true).count
 
     if params[:area] == 'daejeon'
       return render json: User.statistics(true), status: :ok

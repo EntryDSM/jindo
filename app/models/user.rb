@@ -29,10 +29,19 @@ class User < ApplicationRecord
   TOTAL_PASSER_COUNT = 40
 
   def self.statistics(is_daejeon)
-    meister_applicant_count = User.where(apply_type: 'MEISTER', is_daejeon: is_daejeon).count
-    common_applicant_count = User.where(apply_type: 'COMMON', is_daejeon: is_daejeon).count
-    social_applicant_count = User.where.not(apply_type: %w[MEISTER COMMON])
-                                 .where(is_daejeon: is_daejeon).count
+    meister_applicant_count = User.joins(:status)
+                                  .where(apply_type: 'MEISTER', is_daejeon: is_daejeon)
+                                  .where('is_final_submit = ?', true)
+                                  .count
+    common_applicant_count = User.joins(:status)
+                                 .where(apply_type: 'COMMON', is_daejeon: is_daejeon)
+                                 .where('is_final_submit = ?', true)
+                                 .count
+    social_applicant_count = User.joins(:status)
+                                 .where.not(apply_type: %w[MEISTER COMMON])
+                                 .where(is_daejeon: is_daejeon)
+                                 .where('is_final_submit = ?', true)
+                                 .count
 
     total_applicant_count = meister_applicant_count +
                             common_applicant_count +
