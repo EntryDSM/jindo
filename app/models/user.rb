@@ -161,10 +161,10 @@ class User < ApplicationRecord
         next unless result[:is_daejeon] == !filters[:is_nationwide]
       end
       unless filters[:not_arrived].nil?
-        next unless result[:is_arrived] == !filters[:not_arrived]
+        next unless result[:is_arrived] == filters[:is_arrived]
       end
       unless filters[:not_paid].nil?
-        next unless result[:is_paid] == !filters[:not_paid]
+        next unless result[:is_paid] == filters[:is_paid]
       end
       unless filters[:is_common].nil?
         next unless filters[:is_common] == (result[:apply_type] == 'COMMON')
