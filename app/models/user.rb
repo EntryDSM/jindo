@@ -87,12 +87,15 @@ class User < ApplicationRecord
                                end
 
       applicant_count = if key != :social_applicant
-                          User.joins(:calculated_score)
+                          User.joins(%i[calculated_score status])
+                              .where('is_final_submit = ?', true)
                               .where(conversion_score_query)
                               .where(apply_type: key[0..-11].upcase,
-                                     is_daejeon: is_daejeon).count
+                                     is_daejeon: is_daejeon)
+                              .count
                         else
-                          User.joins(:calculated_score)
+                          User.joins(%i[calculated_score status])
+                              .where('is_final_submit = ?', true)
                               .where.not(apply_type: %w[COMMON MEISTER])
                               .where(conversion_score_query)
                               .where(is_daejeon: is_daejeon).count
