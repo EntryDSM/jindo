@@ -275,7 +275,8 @@ class User < ApplicationRecord
     contacts = { applicant_contact: {
       email: email,
       applicant_tel: applicant_tel,
-      parent_tel: parent_tel
+      parent_tel: parent_tel,
+      home_tel: home_tel
     } }
 
     return contacts if grade_type == 'GED'
