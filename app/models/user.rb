@@ -124,35 +124,24 @@ class User < ApplicationRecord
   def self.search(presence_filter, filter_value)
     case presence_filter
     when 0
-      where('email LIKE ?', "%#{filter_value}%").order(created_at: :desc)
-                                                .map(&:applicants_information)
+      where('email LIKE ?', "%#{filter_value}%")
     when 1
-      status = Status.find_by_exam_code(filter_value)
-      return [] if status.nil?
-
-      [status.user.applicants_information]
+      where('exam_code LIKE ?', "%#{filter_value}%")
     when 2
-      graduated_email = School.find_by_school_full_name(filter_value)
-                              .graduated_application_ids
-      ungraduated_email = School.find_by_school_full_name(filter_value)
-                                .ungraduated_application_ids
+      schools = School.where('school_full_name LIKE ?', "%#{filter_value}%")
 
-      graduated_user = GraduatedApplication.where('user_email IN (?)', graduated_email)
-      ungraduated_user = UngraduatedApplication.where('user_email IN (?)', ungraduated_email)
+      emails = schools.flat_map(&:graduated_application_ids) +
+               schools.flat_map(&:ungraduated_application_ids)
 
-      graduated_user.map { |app| app.user.applicants_information } +
-        ungraduated_user.map { |app| app.user.applicants_information }
+      GraduatedApplication.where('user_email IN (?)', emails).map(&:user) +
+        UngraduatedApplication.where('user_email IN (?)', emails).map(&:user)
     when 3
-      user = find_by_applicant_tel(filter_value)
-      return [] if user.nil?
-
-      [user.applicants_information]
+      where('applicant_tel LIKE ?', "%#{filter_value}%")
     when 4
-      where('name LIKE ?', "%#{filter_value}%").order(created_at: :desc)
-                                               .map(&:applicants_information)
+      where('name LIKE ?', "%#{filter_value}%")
     else
-      order(created_at: :desc).map(&:applicants_information)
-    end.compact
+      all
+    end.order(created_at: :desc).map(&:applicants_information)
   end
 
   def self.filter(searched_result, **filters)
