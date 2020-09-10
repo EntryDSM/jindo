@@ -3,6 +3,8 @@ class ApplicationRecord < ActiveRecord::Base
   self.pluralize_table_names = false
 
   def self.signed_url(file_name, method, service_name, expires, region_name = nil, bucket = nil)
+    return nil if file_name.nil?
+
     time_now = Time.now.utc
     amzdate = time_now.strftime('%Y%m%dT%H%M%SZ')
     datestamp = time_now.strftime('%Y%m%d')
