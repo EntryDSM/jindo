@@ -37,9 +37,9 @@ class ApplicantsController < ApplicationController
     return render status: :not_found unless current_user
 
     user_status = current_user.status
-    user_status.update!(is_paid: params[:is_paid]) if params[:is_paid]
-    user_status.update!(is_printed_application_arrived: params[:is_arrived]) if params[:is_arrived]
-    user_status.update!(is_final_submit: params[:is_final_submit]) if params[:is_final_submit]
+    user_status.update!(is_paid: params[:is_paid]) unless params[:is_paid].nil?
+    user_status.update!(is_printed_application_arrived: params[:is_arrived]) unless params[:is_arrived].nil?
+    user_status.update!(is_final_submit: params[:is_final_submit]) unless params[:is_final_submit].nil?
 
     render status: :no_content
   end
