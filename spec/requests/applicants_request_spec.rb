@@ -20,7 +20,7 @@ RSpec.describe 'Applicants', type: :request do
             is_final_submit: true
           },
           privacy: {
-            user_photo: '/home/ubuntu/image.jpg',
+            user_photo: @user.signed_user_photo_url,
             name: '정우영',
             birth_date: '2005-01-01',
             grade_type: 'UNGRADUATED',
