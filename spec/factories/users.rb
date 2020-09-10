@@ -16,7 +16,7 @@ FactoryBot.define do
     address { '광주광역시' }
     detail_address { '"상세주소"' }
     post_code { '12345' }
-    user_photo { '/home/ubuntu/image.jpg' }
+    user_photo { '/home/ubuntu/entry.png' }
     self_introduction { '"자기소개"' }
     study_plan { '"학습 계획"' }
     created_at { DateTime.new(2020) }
