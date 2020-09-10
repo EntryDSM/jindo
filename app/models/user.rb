@@ -196,7 +196,7 @@ class User < ApplicationRecord
       },
 
       privacy: {
-        user_photo: user_photo,
+        user_photo: signed_user_photo_url,
         name: name,
         birth_date: birth_date.strftime('%Y-%m-%d'),
         grade_type: grade_type,
@@ -235,29 +235,12 @@ class User < ApplicationRecord
   end
 
   def signed_user_photo_url
-    time_now = Time.zone.now.getutc
-    region_name = 'ap-northeast-2'
-    service_name = 's3'
-
-    user_photo +
-      '?X-Amz-Algorithm=AWS4-HMAC-SHA256' \
-      "&X-Amz-Credential=#{ENV['AWS_ACCESS_KEY_ID']}/#{time_now.strftime('%Y%m%d')}/#{region_name}/#{service_name}/aws4_request" \
-      "&X-Amz-Date=#{time_now.strftime('%Y%m%dT%H%M%SZ')}" \
-      '&X-Amz-Expires=900' \
-      '&X-Amz-SignedHeaders=host' \
-      "&X-Amz-Signature=#{get_signature_key(ENV['AWS_SECRET_ACCESS_KEY'],
-                                            time_now.strftime('%Y%m%d'),
-                                            region_name,
-                                            service_name)}"
-  end
-
-  def get_signature_key(key, date_stamp, region_name, service_name)
-    k_date = OpenSSL::HMAC.digest('sha256', 'AWS4' + key, date_stamp)
-    k_region = OpenSSL::HMAC.digest('sha256', k_date, region_name)
-    k_service = OpenSSL::HMAC.digest('sha256', k_region, service_name)
-    k_signing = OpenSSL::HMAC.digest('sha256', k_service, 'aws4_request')
-
-    k_signing
+    ApplicationRecord.signed_url(File.basename(user_photo),
+                                 'GET',
+                                 's3',
+                                 900,
+                                 ENV['AWS_REGION'],
+                                 ENV['IMAGE_BUCKET'])
   end
 
   def applicant_contact
