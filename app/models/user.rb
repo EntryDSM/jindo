@@ -126,7 +126,8 @@ class User < ApplicationRecord
     when 0
       where('email LIKE ?', "%#{filter_value}%")
     when 1
-      where('exam_code LIKE ?', "%#{filter_value}%")
+      status = Status.where('exam_code LIKE ?', "%#{filter_value}%")
+      status.map(&:user)
     when 2
       schools = School.where('school_full_name LIKE ?', "%#{filter_value}%")
 
@@ -141,7 +142,7 @@ class User < ApplicationRecord
       where('name LIKE ?', "%#{filter_value}%")
     else
       all
-    end.order(created_at: :desc).map(&:applicants_information)
+    end.sort_by(&:created_at).map(&:applicants_information)
   end
 
   def self.filter(searched_result, **filters)
