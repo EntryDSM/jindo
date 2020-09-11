@@ -20,7 +20,6 @@ RSpec.describe 'Applicants', type: :request do
             is_final_submit: true
           },
           privacy: {
-            user_photo: @user.signed_user_photo_url,
             name: '정우영',
             birth_date: '2005-01-01',
             grade_type: 'UNGRADUATED',
@@ -46,7 +45,10 @@ RSpec.describe 'Applicants', type: :request do
         }
       }
 
-      expect(expected).to eql(JSON.parse(response.body, symbolize_names: true))
+      api_parsed_response = JSON.parse(response.body, symbolize_names: true)
+      photo_url = URI(api_parsed_response[:applicant_information][:privacy].delete(:user_photo))
+
+      expect(expected).to eql(api_parsed_response)
     end
 
     it '> unauthorized token' do
