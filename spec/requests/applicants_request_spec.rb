@@ -46,7 +46,7 @@ RSpec.describe 'Applicants', type: :request do
       }
 
       api_parsed_response = JSON.parse(response.body, symbolize_names: true)
-      photo_url = URI(api_parsed_response[:applicant_information][:privacy].delete(:user_photo))
+      api_parsed_response[:applicant_information][:privacy].delete(:user_photo)
 
       expect(expected).to eql(api_parsed_response)
     end
