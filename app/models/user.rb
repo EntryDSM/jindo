@@ -236,7 +236,7 @@ class User < ApplicationRecord
   end
 
   def signed_user_photo_url
-    ApplicationRecord.signed_url(File.basename(user_photo),
+    ApplicationRecord.signed_url(user_photo,
                                  'GET',
                                  's3',
                                  900,
