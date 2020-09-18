@@ -11,13 +11,11 @@ class ApplicationRecord < ActiveRecord::Base
 
     algorithm = 'AWS4-HMAC-SHA256'
 
-    host = [bucket, service_name, region_name, 'amazonaws.com'].compact.join('.')
-
     access_key = ENV['AWS_ACCESS_KEY_ID']
     secret_key = ENV['AWS_SECRET_ACCESS_KEY']
 
     signed_headers = 'host'
-    canonical_headers = "host:#{host}\n"
+    canonical_headers = "host:#{bucket}\n"
 
     scope = "#{datestamp}/#{region_name}/#{service_name}/aws4_request"
 
@@ -46,7 +44,7 @@ class ApplicationRecord < ActiveRecord::Base
 
     signature = OpenSSL::HMAC.hexdigest('sha256', signature_key, string_to_sign)
 
-    "https://#{host}/#{file_name}?#{canonical_querystring}&X-Amz-Signature=#{signature}"
+    "https://#{bucket}/#{file_name}?#{canonical_querystring}&X-Amz-Signature=#{signature}"
   end
 
   def self.get_signature_key(key, date_stamp, region_name, service_name)
