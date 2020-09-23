@@ -177,7 +177,7 @@ class User < ApplicationRecord
     return nil if nil?
 
     {
-      examination_number: status.exam_code,
+      receipt_code: receipt_code,
       name: name,
       email: email,
       is_daejeon: is_daejeon,

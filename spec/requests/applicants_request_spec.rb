@@ -92,7 +92,7 @@ RSpec.describe 'Applicants', type: :request do
         max_index: 1,
         user_per_page: 12,
         applicants_information: [{
-          examination_number: '123456',
+          receipt_code: 1,
           name: '정우영',
           email: 'wjd030811@dsm.hs.kr',
           is_daejeon: false,
