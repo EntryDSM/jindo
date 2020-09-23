@@ -29,7 +29,7 @@ RSpec.describe 'Applicants', type: :request do
             applicant_tel: '010-0000-0000',
             parent_tel: '010-0000-0000',
             email: 'wjd030811@dsm.hs.kr',
-            school_name: '수완하나중학교',
+            school_name: '수완하나중',
             school_tel: '010-0000-0000'
           },
           evaluation: {
@@ -48,6 +48,8 @@ RSpec.describe 'Applicants', type: :request do
       api_parsed_response = JSON.parse(response.body, symbolize_names: true)
       api_parsed_response[:applicant_information][:privacy].delete(:user_photo)
 
+      puts api_parsed_response
+      puts expected
       expect(expected).to eql(api_parsed_response)
     end
 
