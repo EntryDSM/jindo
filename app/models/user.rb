@@ -174,18 +174,20 @@ class User < ApplicationRecord
   end
 
   def applicants_information
-    return nil if nil?
+    if status
+      return {
+        receipt_code: receipt_code,
+        name: name,
+        email: email,
+        is_daejeon: is_daejeon,
+        apply_type: apply_type,
+        is_arrived: status.is_printed_application_arrived,
+        is_paid: status.is_paid,
+        is_final_submit: status.is_final_submit
+      }
+    end
 
-    {
-      receipt_code: receipt_code,
-      name: name,
-      email: email,
-      is_daejeon: is_daejeon,
-      apply_type: apply_type,
-      is_arrived: status.is_printed_application_arrived,
-      is_paid: status.is_paid,
-      is_final_submit: status.is_final_submit
-    }
+    nil
   end
 
   def applicant_information
@@ -224,7 +226,7 @@ class User < ApplicationRecord
     privacy = response[:applicant_information][:privacy]
     evaluation = response[:applicant_information][:evaluation]
 
-    privacy[:school_name] = flexible_grade_type.school.school_full_name
+    privacy[:school_name] = flexible_grade_type.school.school_name
     privacy[:school_tel] = flexible_grade_type.school_tel
     evaluation[:volunteer_time] = flexible_grade_type.volunteer_time
     evaluation[:full_absent_count] = flexible_grade_type.full_cut_count
@@ -252,7 +254,7 @@ class User < ApplicationRecord
       home_tel: home_tel
     } }
 
-    return contacts if grade_type == 'GED'
+    return contacts if grade_type == 'GED' || grade_type.nil?
 
     contacts[:school_tel] = flexible_grade_type.school_tel
     contacts
