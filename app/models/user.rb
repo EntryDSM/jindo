@@ -20,7 +20,7 @@ class User < ApplicationRecord
   has_one :status, foreign_key: :user_receipt_code
   has_one :calculated_score, foreign_key: :user_receipt_code
 
-  FILTERS = %i[email exam_code school_name applicant_tel name].freeze
+  FILTERS = %i[email receipt_code school_name applicant_tel name].freeze
   USER_PER_PAGE = 12
 
   MEISTER_PASSER_COUNT = 18
@@ -126,7 +126,7 @@ class User < ApplicationRecord
     when 0
       where('email LIKE ?', "%#{filter_value}%")
     when 1
-      status = Status.where('exam_code LIKE ?', "%#{filter_value}%")
+      status = Status.where('receipt_code LIKE ?', "%#{filter_value}%")
       status.map(&:user)
     when 2
       schools = School.where('school_full_name LIKE ?', "%#{filter_value}%")
