@@ -241,7 +241,7 @@ class User < ApplicationRecord
     ApplicationRecord.cloudfront_signed_url("https://#{ENV['IMAGE_BUCKET']}",
                                             user_photo,
                                             (Time.now.utc + 900).to_i,
-                                            ENV['POLICY_FILE_PATH'])
+                                            File.dirname(File.dirname(__dir__)))
   end
 
   def applicant_contact
