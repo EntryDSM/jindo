@@ -14,6 +14,9 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_REGION: ${{ secrets.AWS_REGION }}
       IMAGE_BUCKET: ${{ secrets.IMAGE_BUCKET }}
+      KEY_PAIR_ID: ${{ secrets.KEY_PAIR_ID }}
+      STATIC_USERNAME: ${{ secrets.STATIC_USERNAME }}
+      STATIC_PASSWORD: ${{ secrets.STATIC_PASSWORD }}
       JINDO_TEST_DATABASE_USERNAME: ${{ secrets.JINDO_TEST_DATABASE_USERNAME }}
       JINDO_TEST_DATABASE_PASSWORD: ${{ secrets.JINDO_TEST_DATABASE_PASSWORD }}
       JINDO_TEST_DATABASE_HOST: ${{ secrets.JINDO_TEST_DATABASE_HOST }}
@@ -40,6 +43,13 @@ jobs:
         run: |
           bundle config path vendor/bundle
           bundle install --jobs 4 --retry 3
+
+      - name: set cf pk
+        run: |
+          wget --no-check-certificate \
+          --http-user=${{ secrets.STATIC_USERNAME }} \
+          --http-password=${{ secrets.STATIC_PASSWORD }} \
+          ${{ secrets.CF_PK_URL }}
 
       - name: run tests
         run: bundle exec rake spec
