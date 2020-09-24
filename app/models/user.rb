@@ -218,7 +218,8 @@ class User < ApplicationRecord
     } }
 
     if grade_type == 'GED'
-      response[:evaluation][:ged_average_score] = flexible_grade_type.ged_average_score
+      response[:applicant_information][:evaluation][:ged_average_score] =
+          flexible_grade_type.ged_average_score
       return response
     end
 
