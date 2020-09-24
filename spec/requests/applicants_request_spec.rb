@@ -48,8 +48,6 @@ RSpec.describe 'Applicants', type: :request do
       api_parsed_response = JSON.parse(response.body, symbolize_names: true)
       api_parsed_response[:applicant_information][:privacy].delete(:user_photo)
 
-      puts api_parsed_response
-      puts expected
       expect(expected).to eql(api_parsed_response)
     end
 
