@@ -142,7 +142,7 @@ class User < ApplicationRecord
       where('name LIKE ?', "%#{filter_value}%")
     else
       all
-    end.sort_by(&:created_at).map(&:applicants_information)
+    end.sort_by(&:created_at).map(&:applicants_information).compact
   end
 
   def self.filter(searched_result, **filters)
