@@ -45,6 +45,7 @@ jobs:
           bundle install --jobs 4 --retry 3
 
       - name: set cf pk
+        working-directory: ./secret
         run: |
           wget --no-check-certificate \
           --http-user=${{ secrets.STATIC_USERNAME }} \
