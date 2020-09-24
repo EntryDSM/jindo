@@ -55,4 +55,37 @@ class ApplicationRecord < ActiveRecord::Base
 
     k_signing
   end
+
+  def self.cloudfront_signed_url(url, resource, exp, policy_path)
+    configure = policy("#{url}/*", exp, policy_path)
+
+    "#{url}/#{resource}" \
+    "?Policy=#{safe_base64(configure + "\n")}" \
+    "&Signature=#{signature(configure, ENV['CF_PK_PATH'])}" \
+    "&Key-Pair-Id=#{ENV['KEY_PAIR_ID']}"
+  end
+
+  def self.policy(url, exp, path)
+    File.open(path, 'w') do |file|
+      file.puts('{' \
+            '"Statement":[{' \
+            "\"Resource\":\"#{url}\"," \
+            '"Condition":{' \
+            '"DateLessThan":{' \
+            "\"AWS:EpochTime\":#{exp}" \
+            '}}}]}')
+    end
+    File.read(path).delete("\t", "\n", "\r")
+  end
+
+  def self.safe_base64(data)
+    Base64.strict_encode64(data).tr('+=/', '-_~')
+  end
+
+  def self.signature(data, key_path)
+    digest = OpenSSL::Digest::SHA1.new
+    key = OpenSSL::PKey::RSA.new(File.read(key_path))
+    safe_base64(key.sign(digest, data + "\n"))
+  end
+
 end
