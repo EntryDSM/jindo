@@ -116,8 +116,7 @@ class User < ApplicationRecord
     {
       max_index: filtered_result.count / USER_PER_PAGE + 1,
       user_per_page: USER_PER_PAGE,
-      applicants_information: filtered_result[(index - 1) * USER_PER_PAGE,
-                                              index * USER_PER_PAGE - 1]
+      applicants_information: filtered_result[(index - 1) * USER_PER_PAGE, USER_PER_PAGE]
     }
   end
 
