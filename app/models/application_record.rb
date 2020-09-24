@@ -61,7 +61,7 @@ class ApplicationRecord < ActiveRecord::Base
 
     "#{url}/#{resource}" \
     "?Policy=#{safe_base64(configure + "\n")}" \
-    "&Signature=#{signature(configure, File.dirname(File.dirname(__dir__)) + "secret/pk-#{ENV['KEY_PAIR_ID']}.pem")}" \
+    "&Signature=#{signature(configure, File.dirname(File.dirname(__dir__)) + "/secret/pk-#{ENV['KEY_PAIR_ID']}.pem")}" \
     "&Key-Pair-Id=#{ENV['KEY_PAIR_ID']}"
   end
 
