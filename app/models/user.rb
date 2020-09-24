@@ -238,12 +238,10 @@ class User < ApplicationRecord
   end
 
   def signed_user_photo_url
-    ApplicationRecord.signed_url(user_photo,
-                                 'GET',
-                                 's3',
-                                 900,
-                                 ENV['AWS_REGION'],
-                                 ENV['IMAGE_BUCKET'])
+    ApplicationRecord.cloudfront_signed_url("https://#{ENV['IMAGE_BUCKET']}",
+                                            user_photo,
+                                            (Time.now.utc + 900).to_i,
+                                            ENV['POLICY_FILE_PATH'])
   end
 
   def applicant_contact
