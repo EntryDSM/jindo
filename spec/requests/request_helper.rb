@@ -19,7 +19,7 @@ end
 
 def set_database
   @admin = create(:admin)
-  @token = JWT_BASE.create_access_token(email: @admin.email)
+  @token = JWT_BASE.create_access_token(identity: @admin.email)
   @user = create(:user)
 
   create(:status, user_receipt_code: @user.receipt_code)
