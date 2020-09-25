@@ -125,16 +125,14 @@ class User < ApplicationRecord
     when 0
       where('email LIKE ?', "%#{filter_value}%")
     when 1
-      status = Status.where('receipt_code LIKE ?', "%#{filter_value}%")
-      status.map(&:user)
+      where('receipt_code LIKE ?', "%#{filter_value}%")
     when 2
-      schools = School.where('school_full_name LIKE ?', "%#{filter_value}%")
+      schools = School.where('school_name LIKE ?', "%#{filter_value}%")
 
       receipt_codes = schools.flat_map(&:graduated_application_ids) +
                       schools.flat_map(&:ungraduated_application_ids)
 
-      GraduatedApplication.where('user_receipt_code IN (?)', receipt_codes).map(&:user) +
-        UngraduatedApplication.where('user_receipt_code IN (?)', receipt_codes).map(&:user)
+      where('receipt_code IN (?)', receipt_codes)
     when 3
       where('applicant_tel LIKE ?', "%#{filter_value}%")
     when 4
