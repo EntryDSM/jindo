@@ -113,8 +113,11 @@ class User < ApplicationRecord
     searched_result = search(presence_filter, filter_value)
     filtered_result = filter(searched_result, **filters)
 
+    max_index = filtered_result.count / USER_PER_PAGE
+    max_index += 1 if (filtered_result.count % USER_PER_PAGE).positive?
+
     {
-      max_index: filtered_result.count / USER_PER_PAGE + 1,
+      max_index: max_index,
       user_per_page: USER_PER_PAGE,
       applicants_information: filtered_result[(index - 1) * USER_PER_PAGE, USER_PER_PAGE]
     }
