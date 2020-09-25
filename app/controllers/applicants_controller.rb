@@ -36,6 +36,10 @@ class ApplicantsController < ApplicationController
   def update
     return render status: :not_found unless current_user
 
+    if Admin.find_by_email(@payload['identity']).has_role?(:DEPOSIT_CHECKER)
+      return render status: :bad_request if params[:is_arrived] || params[:is_final_submit]
+    end
+
     user_status = current_user.status
     user_status.update!(is_paid: params[:is_paid]) unless params[:is_paid].nil?
     user_status.update!(is_printed_application_arrived: params[:is_arrived]) unless params[:is_arrived].nil?
