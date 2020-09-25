@@ -28,6 +28,14 @@ class Admin < ApplicationRecord
     instance
   end
 
+  def has_role?(*roles_to_check)
+    roles_to_check.map!(&:to_s)
+    roles = role.split(',')
+    roles_to_check.each { |role| return false unless roles.include?(role) }
+
+    true
+  end
+
   def self.create_exam_code
     classifications = [[User.where(apply_type: 'COMMON', is_daejeon: true),
                         User.where(apply_type: 'COMMON', is_daejeon: false)],
