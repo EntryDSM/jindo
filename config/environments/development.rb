@@ -52,6 +52,6 @@ Rails.application.configure do
 
   # logging with lograge
   config.lograge.enabled = true
-  config.lograge.custom_options = ->(event) { { time: Time.zone.now } }
+  config.lograge.custom_options = ->(event) { { time: Time.zone.now, body: event.payload[:params] } }
   config.after_initialize { ActiveRecord::Base.logger = nil }
 end
