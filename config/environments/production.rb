@@ -79,6 +79,10 @@ Rails.application.configure do
     config.logger    = ActiveSupport::TaggedLogging.new(logger)
   end
 
+  # logging with lograge
+  # config.lograge.enabled = true
+  # config.lograge.custom_options = ->(event) { { time: Time.zone.now } }
+
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
@@ -102,4 +106,9 @@ Rails.application.configure do
   # config.active_record.database_selector = { delay: 2.seconds }
   # config.active_record.database_resolver = ActiveRecord::Middleware::DatabaseSelector::Resolver
   # config.active_record.database_resolver_context = ActiveRecord::Middleware::DatabaseSelector::Resolver::Session
+
+  # logging with lograge
+  config.lograge.enabled = true
+  config.lograge.custom_options = ->(event) { { time: Time.zone.now } }
+  config.after_initialize { ActiveRecord::Base.logger = nil }
 end
