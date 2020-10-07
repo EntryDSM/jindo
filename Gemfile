@@ -17,6 +17,8 @@ gem 'bootsnap', '~> 1.4.6', require: false
 gem 'rack-cors', '~> 1.1.1'
 # Use JWT authentication
 gem 'jwt_extended', '~> 0.1.6'
+# Use to concise log
+gem 'lograge', '~> 0.11.2'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
