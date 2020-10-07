@@ -50,7 +50,6 @@ class Admin < ApplicationRecord
                                          { startX: x, startY: y, endX: 127.36332440, endY: 36.39181879 }))
       distance_information[user.receipt_code] = route_request['features'][0]['properties']['totalDistance']
     end
-    puts distance
 
     receipt_codes_sorted_by_distance = distance.sort_by { |_, v| v }
                                                .map { |v| v[0] }
