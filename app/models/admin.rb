@@ -37,39 +37,49 @@ class Admin < ApplicationRecord
   end
 
   def self.create_exam_code
-    classifications = [[User.where(apply_type: 'COMMON', is_daejeon: true),
-                        User.where(apply_type: 'COMMON', is_daejeon: false)],
-                       [User.where(apply_type: 'MEISTER', is_daejeon: true),
-                        User.where(apply_type: 'MEISTER', is_daejeon: false)],
-                       [User.where.not(apply_type: %w[COMMON MEISTER]).where(is_daejeon: true),
-                        User.where.not(apply_type: %w[COMMON MEISTER]).where(is_daejeon: false)]]
+    submit_users = Status.where(is_final_submit: true).map(&:user)
 
-    classifications.each_with_index do |applies, apply_index|
-      applies.each_with_index do |area, area_index|
-        distance = area.each_with_object({}) do |user, distance_information|
-          convert_request = JSON.parse(request("#{CONVERT_ADDRESS_API}?version=2&searchTypCd=NtoO&"\
+    distance = submit_users.each_with_object({}) do |user, distance_information|
+      convert_request = JSON.parse(request("#{CONVERT_ADDRESS_API}?version=2&searchTypCd=NtoO&"\
                                                    "reqAdd=#{user.address}&appKey=#{ENV['TMAP_APP_KEY']}"))
-          x = convert_request['ConvertAdd']['oldLon']
-          y = convert_request['ConvertAdd']['oldLat']
+      x = convert_request['ConvertAdd']['oldLon']
+      y = convert_request['ConvertAdd']['oldLat']
 
-          route_request = JSON.parse(request("#{ROUTE_ADDRESS_API}?version=2&totalValue=2&"\
+      route_request = JSON.parse(request("#{ROUTE_ADDRESS_API}?version=2&totalValue=2&"\
                                                  "appKey=#{ENV['TMAP_APP_KEY']}",
-                                             { startX: x, startY: y, endX: 127.36332440, endY: 36.39181879 }))
-          distance_information[user.receipt_code] = route_request['features'][0]['properties']['totalDistance']
-        end
+                                         { startX: x, startY: y, endX: 127.36332440, endY: 36.39181879 }))
+      distance_information[user.receipt_code] = route_request['features'][0]['properties']['totalDistance']
+    end
+    puts distance
 
-        users_sorted_by_distance = distance.sort_by { |_, v| v }
-                                           .map { |v| v[0] }
-                                           .reverse
-        users_sorted_by_distance.inject(1) do |reciept_code, count|
-          User.find_by_receipt_code(reciept_code)
-              .status
-              .update!(exam_code: ((apply_index + 1) * 10_000 +
-                                   (area_index + 1) * 1_000 +
-                                    count).to_s)
-          count + 1
-        end
-      end
+    receipt_codes_sorted_by_distance = distance.sort_by { |_, v| v }
+                                               .map { |v| v[0] }
+                                               .reverse
+
+    counts = [[1, 1], [1, 1], [1, 1]]
+
+    receipt_codes_sorted_by_distance.each do |reciept_code|
+      user = User.find_by_receipt_code(reciept_code)
+
+      apply_type_code = if user.apply_type == 'COMMON'
+                          1
+                        elsif user.apply_type == 'MEISTER'
+                          2
+                        else
+                          3
+                        end
+
+      region_code = if user.is_daejeon
+                      1
+                    else
+                      2
+                    end
+
+      user.status.update!(exam_code: apply_type_code * 10_000 +
+                                     region_code * 1_000 +
+                                     counts[apply_type_code - 1][region_code - 1])
+
+      counts[apply_type_code - 1][region_code - 1] += 1
     end
   end
 
