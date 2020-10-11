@@ -37,7 +37,7 @@ class Admin < ApplicationRecord
   end
 
   def self.create_exam_code
-    submit_users = Status.where(is_final_submit: true).map(&:user)
+    submit_users = Status.where(is_passed_first_apply: true).map(&:user)
 
     distance = submit_users.each_with_object({}) do |user, distance_information|
       convert_request = JSON.parse(request("#{CONVERT_ADDRESS_API}?version=2&searchTypCd=NtoO&"\
