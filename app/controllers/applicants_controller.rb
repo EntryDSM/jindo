@@ -37,7 +37,7 @@ class ApplicantsController < ApplicationController
     return render status: :not_found unless current_user
 
     if Admin.find_by_email(@payload['identity']).has_role?(:DEPOSIT_CHECKER)
-      return render status: :bad_request if params[:is_arrived] || params[:is_final_submit]
+      return render status: :bad_request unless params[:is_arrived].nil? && params[:is_final_submit].nil?
     end
 
     user_status = current_user.status
